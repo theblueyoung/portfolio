@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>유영 Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;500;700&family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: fixed side rail + sticky "work" stage driven by scroll; editorial grey, one violet accent. */
+:root{color-scheme:light;--bg:#ececec;--ink:#121212;--mute:#8b8b8b;--line:#12121226;--acc:#6a4bff;--dark:#0c0c0c;
+--disp:'Outfit','Noto Sans KR',sans-serif;--sans:'Noto Sans KR','Outfit',sans-serif;--mono:'DM Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;overflow-x:hidden;
+ padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+
+/* loader: name reveal, then a little character pushes the dark curtain aside */
+#load{position:fixed;inset:0;z-index:100;background:var(--bg);animation:autohide 0s 5.4s forwards}
+@keyframes autohide{to{visibility:hidden;opacity:0}}
+#load .panel{position:absolute;inset:0;background:var(--dark);color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(18px,3vw,32px);transition:transform 1.05s cubic-bezier(.7,0,.2,1)}
+#load.go .panel{transform:translateX(100%)}
+#load .nm{font-family:var(--disp);font-weight:200;font-size:clamp(90px,26vw,420px);line-height:.85;letter-spacing:-.04em;display:flex;overflow:hidden;padding-bottom:.06em}
+#load .nm span{display:inline-block;transform:translateY(105%);animation:up .9s cubic-bezier(.2,.8,.2,1) forwards}
+#load .nm span:nth-child(2){animation-delay:.12s}#load .nm span:nth-child(3){animation-delay:.24s;color:var(--acc);font-weight:700}
+@keyframes up{to{transform:none}}
+#load .row2{display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+#ld{font-family:var(--disp);font-weight:100;font-size:clamp(48px,8vw,110px);line-height:.8;letter-spacing:-.03em}
+#load .pusher{position:absolute;left:-118px;top:50%;width:118px;height:150px;transform:translateY(-50%);overflow:visible}
+#load .pusher .arm{transform-origin:70% 60%;animation:push .5s ease-in-out infinite alternate}
+#load .pusher .leg1{transform-origin:60% 8%;animation:step .5s ease-in-out infinite alternate}
+#load .pusher .leg2{transform-origin:60% 8%;animation:step .5s ease-in-out infinite alternate-reverse}
+@keyframes push{to{transform:rotate(-8deg)}}@keyframes step{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
+
+/* fixed chrome */
+.rail{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:24px;bottom:24px;z-index:20;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;mix-blend-mode:difference;color:#fff}
+.rail .logo{writing-mode:vertical-rl;font-family:var(--disp);font-weight:700;font-size:30px;line-height:1;letter-spacing:.02em}
+.rail .mono{color:#fff;writing-mode:vertical-rl;transform:rotate(180deg)}
+.top{position:fixed;left:0;right:0;top:0;z-index:20;display:flex;justify-content:space-between;align-items:flex-start;padding:calc(20px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 0 max(78px,calc(env(safe-area-inset-left,0px) + 78px));pointer-events:none;mix-blend-mode:difference;color:#fff}
+.top>*{pointer-events:auto}
+.top .mono,.top a,.top button{color:#fff}
+.menu{display:flex;flex-direction:column;font-family:var(--disp);font-weight:500;font-size:24px;line-height:.95;text-transform:uppercase;text-decoration:none}
+.menu a{text-decoration:none;transition:transform .25s}
+.menu a:hover{transform:translateX(8px)}
+.menu a.on::before{content:"→ "}
+.top .col{display:flex;flex-direction:column;gap:4px;text-align:right}
+.aud{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+
+section{padding-left:max(78px,calc(env(safe-area-inset-left,0px) + 78px))}
+@media(max-width:800px){section{padding-left:0}.rail{display:none}.top{padding-left:max(16px,env(safe-area-inset-left,0px))}.menu{font-size:18px}}
+
+/* hero */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding-top:180px;padding-bottom:6vh;position:relative}
+#hero h1{font-family:var(--disp);font-weight:200;font-size:clamp(48px,10vw,170px);line-height:.9;letter-spacing:-.03em;text-transform:uppercase}
+#hero h1 b{font-weight:700;color:var(--acc)}
+#hero h1 span{display:block;overflow:hidden}
+#hero h1 span i{display:block;font-style:normal;transform:translateY(0);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+body:not(.ready) #hero h1 span i{transform:translateY(105%)}
+#hero .sub{max-width:520px;margin-top:28px;font-size:16px;font-weight:300}
+#hero .meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:36px}
+.cursorword{position:absolute;right:6vw;top:34vh;font-family:var(--mono);font-size:11px;color:var(--mute);pointer-events:none}
+#orb{position:absolute;right:8vw;top:22vh;width:min(28vw,360px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--acc) 55%,#2a1a8a);filter:blur(0.4px);transition:transform .15s linear;box-shadow:0 30px 80px #6a4bff44}
+@media(max-width:800px){#orb{top:120px;right:-10vw;width:56vw;opacity:.8}}
+
+/* work */
+#work{padding-top:0}
+.workwrap{height:420vh;position:relative}
+.sticky{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:minmax(220px,300px) 1fr minmax(260px,380px);gap:2vw;align-items:center;padding-right:max(16px,3vw)}
+.cnt{align-self:end;padding-bottom:7vh;position:relative}
+.cnt .mono{display:block;margin-bottom:6px}
+.num{font-family:var(--disp);font-weight:100;font-size:clamp(120px,17vw,260px);line-height:.8;letter-spacing:-.05em;display:inline-block}
+.tot{font-family:var(--mono);font-size:12px;vertical-align:top;margin-left:8px;color:var(--mute)}
+.facts{margin-top:28px;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:12px}
+.facts dt{color:var(--mute)}
+.facts dd{margin:0}
+.stagebox{position:relative;height:72vh;perspective:1200px}
+.stage{position:absolute;inset:0;transition:clip-path .9s cubic-bezier(.7,0,.2,1),background .6s;clip-path:polygon(10% 0,100% 8%,90% 100%,0 92%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage.alt{clip-path:polygon(0 8%,90% 0,100% 92%,10% 100%)}
+.stage .big{position:absolute;left:4%;right:4%;bottom:6%;font-family:var(--disp);font-weight:700;font-size:clamp(50px,9vw,140px);line-height:.85;color:#ffffff30;text-transform:uppercase;letter-spacing:-.03em;transition:opacity .4s}
+.stage .ph{position:relative;width:min(240px,34%);aspect-ratio:9/19;border-radius:26px;overflow:hidden;box-shadow:0 30px 70px #0006,0 0 0 6px #111;transform:rotate(-6deg) translateY(0);transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .4s}
+.stage .ph img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.stage.swap .ph{transform:rotate(8deg) translateY(30px);opacity:0}
+.list{display:flex;flex-direction:column;gap:clamp(22px,5vh,56px)}
+.row{cursor:pointer;text-align:center;opacity:.28;transition:opacity .4s;background:none;color:inherit;width:100%}
+.row.on{opacity:1}
+.row .mono{display:block}
+.row h3{font-family:var(--disp);font-weight:300;font-size:clamp(26px,3vw,44px);text-transform:uppercase;line-height:1.05;letter-spacing:-.01em;margin:4px 0}
+.row.on h3{font-weight:700}
+.row p{max-width:300px;margin:6px auto 0;font-size:13px;font-weight:300}
+.row .open{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;text-transform:uppercase;border-bottom:1px solid;opacity:0;transition:opacity .3s}
+.row.on .open{opacity:1}
+.mcover{display:none}
+.swatches{position:absolute;right:max(16px,2vw);top:50%;display:flex;gap:4px;transform:translateY(-50%)}
+.swatches i{width:14px;height:14px;display:block;transition:background .5s}
+.scrollhint{position:absolute;left:0;bottom:3vh}
+@media(max-width:800px){
+  .workwrap{height:auto}.sticky{position:static;height:auto;display:block;padding:40px 0}
+  .cnt,.stagebox,.swatches,.scrollhint{display:none}
+  .list{gap:56px}.row{opacity:1;text-align:left}.row p{margin-left:0}.row .open{opacity:1}
+  .mcover{display:block;margin-top:16px;aspect-ratio:4/3;border-radius:6px;overflow:hidden;background:var(--c)}
+  .mcover img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+}
+
+/* playground */
+#play{padding-top:14vh;padding-bottom:10vh;background:var(--dark);color:#f2f2f2;margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-right:max(16px,3vw);padding-left:max(78px,calc(env(safe-area-inset-left,0px) + 78px))}
+@media(max-width:800px){#play{padding-left:max(16px,env(safe-area-inset-left,0px))}}
+#play .mono{color:#8f8f8f}
+.h2{font-family:var(--disp);font-weight:200;font-size:clamp(44px,8vw,130px);line-height:.9;letter-spacing:-.03em;text-transform:uppercase;margin:10px 0 18px}
+.h2 b{font-weight:700;color:var(--acc)}
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px;margin-top:40px}
+.demo{background:#171717;border:1px solid #2a2a2a;border-radius:6px;padding:clamp(18px,3vw,30px);min-width:0}
+.demo h3{font-family:var(--disp);font-weight:500;font-size:26px;text-transform:uppercase}
+.demo p.how{color:#a8a8a8;font-size:13px;margin:6px 0 18px;max-width:46ch}
+.ctl{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.ctl label{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:#a8a8a8}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--acc)}
+.big-n{font-family:var(--disp);font-weight:200;font-size:56px;line-height:1;min-width:2.4ch}
+.tl{display:flex;flex-direction:column;gap:6px}
+.ti{display:grid;grid-template-columns:78px 1fr auto;gap:12px;align-items:center;padding:9px 12px;border-radius:4px;background:#202020;font-size:13px;transition:transform .5s cubic-bezier(.2,.8,.2,1),background .3s,opacity .3s}
+.ti .d{font-family:var(--mono);font-size:12px;color:#c9c9c9}
+.ti .tag{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:99px;background:#2e2e2e;color:#bbb;white-space:nowrap}
+.ti.late{background:#3a1d22}.ti.late .tag{background:#ff5470;color:#000}
+.ti.key{background:var(--acc);color:#fff}.ti.key .d,.ti.key .tag{color:#fff;background:#ffffff30}
+.warn{margin-top:12px;font-size:12px;color:#ff8a9c;min-height:1.4em}
+.room{position:relative;height:260px;border-radius:6px;overflow:hidden;transition:background .6s;margin-bottom:16px}
+.room .win{position:absolute;right:14%;top:14%;width:20%;aspect-ratio:1;background:#0b1530;border:4px solid #1b1b2b;transition:background .6s,transform .6s}
+.room .plant{position:absolute;left:10%;bottom:16%;width:28px;height:50px;background:#3f8f4a;border-radius:50% 50% 8px 8px;transition:opacity .6s,transform .6s;transform-origin:bottom}
+.room .rug{position:absolute;left:30%;right:30%;bottom:6%;height:14px;background:#e58aa6;border-radius:50%;transition:opacity .6s}
+.room .floor{position:absolute;left:0;right:0;bottom:0;height:22%;background:#00000030}
+.room .trash{position:absolute;left:62%;bottom:12%;width:30px;height:16px;background:#7a7a7a;border-radius:4px;transition:opacity .6s}
+.room .ppl{position:absolute;right:6%;bottom:12%;display:flex;gap:10px;transition:opacity .6s}
+.room .ppl i{display:block;width:12px;height:30px;background:#2d3b6b;border-radius:6px 6px 2px 2px}
+.me{position:absolute;left:44%;bottom:12%;width:28px;height:54px;transition:transform .7s cubic-bezier(.2,.8,.2,1),left .7s;transform-origin:bottom}
+.me::before{content:"";position:absolute;left:3px;top:0;width:22px;height:20px;background:#9c7bff;border-radius:8px 8px 4px 4px}
+.me::after{content:"";position:absolute;left:5px;top:20px;width:18px;height:34px;background:#a9c4e6;border-radius:4px}
+.cap{font-family:var(--disp);font-weight:300;font-size:22px;min-height:1.3em}
+
+/* about + contact */
+#about{padding-top:16vh;padding-bottom:10vh;padding-right:max(16px,3vw)}
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6vw;margin-top:30px}
+@media(max-width:800px){.about{grid-template-columns:1fr}}
+.about p.lead{font-family:var(--disp);font-weight:300;font-size:clamp(24px,3vw,40px);line-height:1.2;letter-spacing:-.01em}
+.about h4{font-family:var(--mono);font-size:11px;font-weight:400;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.about ul{list-style:none;padding:0;border-top:1px solid var(--line)}
+.about li{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+.before{margin-top:34px;max-width:52ch;font-size:13px;color:#555}
+#contact{padding-top:12vh;padding-bottom:6vh;padding-right:max(16px,3vw);min-height:80vh;display:flex;flex-direction:column;justify-content:space-between;background:var(--acc);color:#fff;margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-left:max(78px,calc(env(safe-area-inset-left,0px) + 78px))}
+@media(max-width:800px){#contact{padding-left:max(16px,env(safe-area-inset-left,0px))}}
+#contact .h2{font-size:clamp(54px,13vw,220px);color:#fff}
+#contact .mail{font-family:var(--disp);font-weight:300;font-size:clamp(22px,4vw,56px);word-break:break-all;user-select:all}
+#contact .mono{color:#ffffffcc}
+.copy{margin-left:14px;border:1px solid #fff;border-radius:99px;padding:4px 14px;font-family:var(--mono);font-size:11px;text-transform:uppercase;vertical-align:middle}
+.copy:hover{background:#fff;color:var(--acc)}
+
+/* case overlay */
+#case{position:fixed;inset:0;z-index:60;background:var(--bg);transform:translateX(100%);transition:transform .7s cubic-bezier(.7,0,.2,1);overflow:auto;display:grid;grid-template-columns:minmax(220px,380px) 1fr;visibility:hidden}
+#case.open{transform:none;visibility:visible}
+#case .side{padding:calc(28px + env(safe-area-inset-top,0px)) 28px 28px max(28px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:20px;background:var(--cbg,#222);color:#fff;min-height:100vh}
+#case .side img{width:70%;max-width:240px;border-radius:22px;box-shadow:0 20px 50px #0006,0 0 0 5px #111;transform:rotate(-4deg)}
+#case .main{padding:calc(28px + env(safe-area-inset-top,0px)) max(24px,5vw) 60px;max-width:880px}
+#case h2{font-family:var(--disp);font-weight:700;font-size:clamp(44px,7vw,100px);line-height:.9;text-transform:uppercase;letter-spacing:-.03em}
+#case .one{font-size:18px;font-weight:300;margin:16px 0 28px;max-width:46ch}
+#case dl{display:grid;grid-template-columns:130px 1fr;gap:0;border-top:1px solid var(--line)}
+#case dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--mute);padding:16px 0;border-bottom:1px solid var(--line)}
+#case dd{margin:0;padding:14px 0;border-bottom:1px solid var(--line)}
+#case dd ul{padding-left:18px}
+.x{align-self:flex-start;border:1px solid currentColor;border-radius:99px;padding:6px 16px;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:#fff}
+.x:hover{background:#fff;color:#111}
+.ghlink{display:inline-block;margin-top:26px;background:var(--ink);color:#fff;padding:12px 22px;border-radius:99px;text-decoration:none;font-family:var(--mono);font-size:12px;text-transform:uppercase}
+@media(max-width:800px){#case{grid-template-columns:1fr}#case .side{min-height:0;flex-direction:row;align-items:center;flex-wrap:wrap}#case .side img{width:90px}#case dl{grid-template-columns:90px 1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="load" aria-hidden="true"><div class="panel">
+  <div class="row2"><span>Portfolio — 2026</span><span>UX · Interaction Designer</span></div>
+  <div class="row2"><div class="nm"><span>유</span><span>영</span><span>©</span></div><div id="ld">0</div></div>
+  <svg class="pusher" viewBox="0 0 118 150" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="52" cy="30" r="22" fill="#6a4bff" stroke="#fff"/><path d="M32 22 Q52 2 74 22" fill="#fff"/><circle cx="46" cy="32" r="2.5" fill="#fff" stroke="none"/><circle cx="62" cy="32" r="2.5" fill="#fff" stroke="none"/>
+    <path d="M46 40 q6 5 12 0"/><path d="M50 52 L48 98"/>
+    <g class="arm"><path d="M50 66 L96 58"/><rect x="94" y="46" width="12" height="24" rx="5" fill="#fff"/></g>
+    <g class="leg1"><path d="M48 98 L36 140"/></g><g class="leg2"><path d="M48 98 L66 140"/></g>
+  </svg>
+</div></div>
+
+<div class="rail"><div class="logo">유영©</div><div class="mono">UX · Interaction Designer</div></div>
+
+<div class="top">
+  <nav class="menu" id="menu"><a href="#work">Work</a><a href="#play">Playground</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+  <div class="col"><button class="aud" id="aud" aria-pressed="false">Audio Off —</button><span class="mono" id="clock">KST 00:00</span></div>
+</div>
+
+<section id="hero">
+  <div id="orb" aria-hidden="true"></div>
+  <h1><span><i>Ideas that</i></span><span><i><b>move</b> when</i></span><span><i>you touch them</i></span></h1>
+  <p class="sub">유영 — UX 인터랙션 디자이너. 복잡한 흐름을 손에 잡히는 움직임으로 바꿉니다. 아래로 스크롤하면 작업이, 그 뒤에는 직접 만져볼 수 있는 인터랙션이 나와요.</p>
+  <div class="meta"><span class="mono">Available for 2027</span><span class="mono">Seoul, KR</span><span class="mono">UX · UI · Prototyping</span></div>
+  <span class="mono" style="position:absolute;right:3vw;bottom:2vh">↓ Scroll</span>
+</section>
+
+<section id="work">
+  <div class="workwrap" id="ww">
+    <div class="sticky">
+      <div class="cnt"><span class="mono">Selected work</span><span class="num" id="num">01</span><span class="tot">/04</span>
+        <dl class="facts" id="facts"></dl></div>
+      <div class="stagebox"><div class="stage" id="stage"><div class="big" id="sbig"></div><div class="ph"><img id="simg" alt=""></div></div></div>
+      <div class="list" id="list"></div>
+      <div class="swatches" id="sw"><i></i><i></i><i></i></div>
+      <span class="mono scrollhint">Scroll · 프로젝트가 바뀝니다</span>
+    </div>
+  </div>
+</section>
+
+<section id="play">
+  <span class="mono">Playground</span>
+  <h2 class="h2">Try the <b>interaction</b></h2>
+  <p style="max-width:52ch;color:#b5b5b5">프로젝트에서 설계한 핵심 동작을 그대로 가져왔어요. 직접 움직여보세요.</p>
+  <div class="demos">
+    <div class="demo">
+      <span class="mono">from 24dday</span><h3>잔금일을 바꾸면</h3>
+      <p class="how">잔금일 하나를 움직이면 나머지 일정이 같이 움직이고, 이미 늦은 일정은 바로 경고해요.</p>
+      <div class="ctl"><label for="cd">잔금까지</label><input id="cd" type="range" min="3" max="90" value="40"><span class="big-n" id="cdn">40</span><span class="mono">일</span></div>
+      <div class="tl" id="tl"></div><div class="warn" id="warn"></div>
+    </div>
+    <div class="demo">
+      <span class="mono">from 토닥토닥</span><h3>같이 자라는 방</h3>
+      <p class="how">작은 미션을 할수록 레벨이 오르고 방이 밝아져요. 슬라이더로 Lv1부터 Lv8까지 미리 볼 수 있어요.</p>
+      <div class="room" id="room"><div class="win"></div><div class="floor"></div><div class="trash"></div><div class="plant"></div><div class="rug"></div><div class="ppl"><i></i><i></i><i></i></div><div class="me" id="me"></div></div>
+      <div class="ctl"><label for="lv">Level</label><input id="lv" type="range" min="1" max="8" value="1"><span class="big-n" id="lvn">1</span></div>
+      <div class="cap" id="cap"></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <span class="mono">About</span>
+  <div class="about">
+    <div>
+      <p class="lead">사람이 어디서 막히는지 먼저 보고, 그 자리에 가장 작은 움직임을 둡니다.</p>
+      <p class="before">UX를 하기 전에는 태권도 겨루기 선수, 힙합 래퍼, 호주의 요리사였어요. 거리와 타이밍, 리듬, 바쁜 주방의 시스템. 지금 인터랙션을 설계하는 방식이 전부 거기서 왔습니다.</p>
+    </div>
+    <div>
+      <h4>Capabilities</h4>
+      <ul><li><span>Research & Planning</span><span class="mono">IA · Journey · Storyboard</span></li><li><span>Interaction & Prototyping</span><span class="mono">Figma · HTML/CSS/JS</span></li><li><span>Visual / UI</span><span class="mono">Design system · Mobile</span></li><li><span>Inclusive design</span><span class="mono">Plain language · Accessibility</span></li></ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div><span class="mono">Contact</span><h2 class="h2">Let's make<br>it move.</h2></div>
+  <div><div class="mail" id="mail">hello@your-email.com</div><button class="copy" id="copy">Copy</button><p class="mono" style="margin-top:14px">이름·이메일·링크는 확정되면 교체</p></div>
+</section>
+
+<div id="case" role="dialog" aria-modal="true" aria-label="프로젝트 상세">
+  <div class="side" id="cside"><button class="x" id="cx">Close ✕</button><img id="cimg" alt=""><span class="mono" id="cmeta" style="color:#ffffffcc"></span></div>
+  <div class="main"><span class="mono" id="ccat"></span><h2 id="ct"></h2><p class="one" id="cone"></p><dl id="cdl"></dl><a class="ghlink" id="cgh" target="_blank" rel="noopener">GitHub repository ↗</a></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const COVERS={'24dday':'assets/covers/24dday.png','todottodot':'assets/covers/todottodot.png','memory':'assets/covers/memory.png','jeju':'assets/covers/jeju.png'};
+const P=[
+ {k:'24dday',cat:'Mobile app · Moving',t:'24dday',one:'잔금일 하나로 이사 일정을 거꾸로 짜주는 앱',bg:'#6a4bff',sw:['#6a4bff','#ffd84d','#fff'],
+  facts:[['Role','UX · UI · Prototype'],['Status','Finished'],['Type','Mobile web prototype'],['Focus','Date-driven timeline']],gh:'24dday',
+  rows:[['Why','이사는 계약·대출·서류·청소·전입신고가 얽힌 큰일인데, 모든 일이 "잔금일" 하나를 기준으로 움직여요. 그래서 잔금일 D-day를 중심에 두고 할 일을 역산해서 챙겨주는 앱으로 기획했어요.'],
+   ['Who','이사가 처음이거나 함께 사는 사람과 과정을 공유하고 싶은 20~50대. 글보다 시각적 표현, 용어 한 줄 설명, 한 화면에 한 행동.'],
+   ['Design','<ul><li>매도와 매수를 하나의 "이사 프로젝트"로 묶음</li><li>날짜 하나를 바꾸면 나머지가 같이 움직이고, 순서가 꼬이면 경고</li><li>가족 공유, 담당자 지정, 서류 체크리스트(전세사기 방지 체크 포함)</li><li>하단 5탭: 홈 · 일정 · 자금 · 서비스 · 커뮤니티</li></ul>'],
+   ['Process','문제 정의 → 해외 레퍼런스(My Move, PEXA Key, Rello, Muving) → 거래 유형별 타임라인 → IA → 스토리보드 → 대시보드형 선택 → 컬러 3안 탐색 → 프로토타입 → Figma'],
+   ['Result','화면 45개 규모의 모바일 프로토타입 완성. 사용자 테스트 지표는 아직 없음.']]},
+ {k:'todottodot',cat:'Mobile app · Self-care',t:'토닥토닥',one:'작은 미션으로 자존감을 키우는 픽셀 캐릭터 앱',bg:'#b9a7f0',sw:['#b9a7f0','#a8c9f2','#f4a7cd'],
+  facts:[['Role','UX · UI · Prototype'],['Status','Prototype'],['Type','Mobile web'],['Focus','Growth loop, inclusion']],gh:'todottodot',
+  rows:[['Why','"캐릭터가 방을 청소할 때, 나도 진짜 내 방을 청소한다." 화면 속 캐릭터와 같은 행동을 함께하며 "같이 해낸 느낌"으로 작은 성공을 쌓게 해요.'],
+   ['Loop','마음 체크 → 기분에 맞는 미션 추천 → 캐릭터와 함께 실제 행동(타이머) → 완료·레벨업 시 방이 밝아짐 (Lv1 어두운 방 → Lv8 공원)'],
+   ['Principles','<ul><li>벌점 없음. 멈춰도 "여기까지만 해도 괜찮아요"</li><li>성별 선택 없는 포용적 캐릭터(피부톤 7단계, 히잡 등)</li><li>위기 상담 안내 상시 노출</li><li>한국어/영어 전환</li></ul>'],
+   ['Result','미션 10종과 5단계 성장 장면이 작동하는 프로토타입. 이미지 없이 코드로 그린 픽셀 캐릭터.']]},
+ {k:'memory',cat:'Mobile app · Social',t:'응답하라 1982',one:'친구들과 사진첩·교환일기·음악을 나누는 레트로 앱',bg:'#d8c79a',sw:['#d8c79a','#e0664a','#274a63'],
+  facts:[['Role','UX · UI · Concept'],['Status','Concept'],['Type','Mobile web'],['Focus','Nostalgia, privacy']],gh:'memory',
+  rows:[['Why','실물 사진첩과 교환일기의 온기를 되살려, 친한 친구들끼리만 쓰는 작은 추억 공간을 만들어요.'],
+   ['Parts','미니홈피 · 방명록 · 사진(스캔 연출) · 음악 · 다이어리(교환일기) · 삐삐번호'],
+   ['Notes','음악은 파일 재생이 아니라 스트리밍 링크 공유(저작권). 이름과 고유 용어는 출시 전 새로 정해야 해요.'],
+   ['Result','두 가지 콘셉트(오래된 서랍 / 응답하라 1982)를 만들고 하나를 발전시킴.']]},
+ {k:'jeju',cat:'Website · Responsive',t:'Visit Jeju',one:'제주 슬로우 트래블 관광 웹사이트',bg:'#2f5d3a',sw:['#2f5d3a','#9ec3d8','#fff'],
+  facts:[['Role','Design · Front-end'],['Status','School project'],['Type','5-page website'],['Focus','Mobile-first']],gh:'usyd_jeju',
+  rows:[['Overview','모바일 우선으로 만든 5페이지 관광 웹사이트. HTML/CSS만으로 구현(JavaScript 없음).'],
+   ['Build','Flexbox와 미디어쿼리로 반응형 구성, CSS 전용 햄버거 메뉴.'],
+   ['Why it matters','코드로 구조를 직접 짜본 첫 단계. 지금 프로토타입을 직접 만드는 바탕이 된 작업.']]}];
+
+/* loader */
+(()=>{let n=0;const t=setInterval(()=>{n=Math.min(100,n+2+Math.random()*3|0);$('#ld').textContent=n;if(n>=100){clearInterval(t);setTimeout(()=>{$('#load').classList.add('go');setTimeout(()=>document.body.classList.add('ready'),450)},700)}},60)})();
+setTimeout(()=>document.body.classList.add('ready'),5200);
+
+/* clock */
+(()=>{const f=()=>{try{$('#clock').textContent='KST '+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit'}).format(new Date())}catch(e){}};f();setInterval(f,20000)})();
+
+/* orb follows pointer */
+addEventListener('pointermove',e=>{const o=$('#orb');if(!o)return;const x=(e.clientX/innerWidth-.5)*40,y=(e.clientY/innerHeight-.5)*40;o.style.transform=`translate(${x}px,${y}px)`});
+
+/* work: list, stage, scroll-driven active */
+const list=$('#list');
+P.forEach((p,i)=>{const b=document.createElement('button');b.className='row';b.dataset.i=i;
+  b.innerHTML=`<span class="mono">${p.cat}</span><h3>${p.t}</h3><p>${p.one}</p><span class="open">View case ↗</span><div class="mcover" style="--c:${p.bg}"><img src="${COVERS[p.k]}" alt="${p.t} 화면" loading="lazy"></div>`;
+  b.onmouseenter=()=>{if(innerWidth>800)set(i)};b.onclick=()=>openCase(i);list.appendChild(b)});
+let cur=-1;
+function set(i){if(i===cur)return;const first=cur<0;cur=i;const p=P[i],st=$('#stage');
+  $$('.row').forEach((r,j)=>r.classList.toggle('on',j===i));
+  $('#num').textContent=String(i+1).padStart(2,'0');
+  $('#facts').innerHTML=p.facts.map(f=>`<dt>${f[0]}</dt><dd>${f[1]}</dd>`).join('');
+  $$('#sw i').forEach((s,j)=>s.style.background=p.sw[j]);
+  if(first){fill()}else{st.classList.add('swap');st.classList.toggle('alt');setTimeout(()=>{fill();st.classList.remove('swap')},320)}
+  function fill(){st.style.background=p.bg;$('#simg').src=COVERS[p.k];$('#simg').alt=p.t+' 화면';$('#sbig').textContent=p.t}}
+function onScroll(){if(innerWidth<=800){return}
+  const w=$('#ww'),r=w.getBoundingClientRect(),prog=Math.min(.999,Math.max(0,-r.top/(w.offsetHeight-innerHeight)));
+  if(r.top<innerHeight&&r.bottom>0)set(Math.floor(prog*P.length));
+  $$('#menu a').forEach(a=>{const t=$(a.getAttribute('href'));const b=t.getBoundingClientRect();a.classList.toggle('on',b.top<innerHeight*.5&&b.bottom>innerHeight*.5)})}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);set(0);onScroll();
+
+/* case overlay */
+function openCase(i){const p=P[i];$('#cside').style.setProperty('--cbg',p.bg);$('#cimg').src=COVERS[p.k];$('#cimg').alt=p.t;
+  $('#cmeta').textContent=p.facts.map(f=>f[1]).join(' · ');$('#ccat').textContent=p.cat;$('#ct').textContent=p.t;$('#cone').textContent=p.one;
+  $('#cdl').innerHTML=p.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');$('#cgh').href='https://github.com/theblueyoung/'+p.gh;
+  $('#case').classList.add('open');$('#case').scrollTop=0;document.body.style.overflow='hidden';$('#cx').focus()}
+function closeCase(){$('#case').classList.remove('open');document.body.style.overflow=''}
+$('#cx').onclick=closeCase;addEventListener('keydown',e=>{if(e.key==='Escape')closeCase()});
+
+/* demo 1: closing date drives the schedule */
+(()=>{
+  const fmt=d=>`${d.getMonth()+1}/${String(d.getDate()).padStart(2,'0')}`;
+  const R=[['대출 상담',-28],['법무사 견적 비교',-28],['이삿짐 예약',-25],['잔금',0,1],['입주청소',5],['이사',7,1],['전입신고',8]];
+  function draw(){
+    const n=+$('#cd').value;$('#cdn').textContent=n;
+    const t=new Date();t.setHours(0,0,0,0);const base=new Date(t);base.setDate(base.getDate()+n);
+    const late=[];
+    $('#tl').innerHTML=R.map(([name,off,key])=>{const d=new Date(base);d.setDate(d.getDate()+off);const diff=Math.round((d-t)/864e5);
+      const isLate=diff<0;if(isLate)late.push(name);
+      return `<div class="ti ${key?'key':''} ${isLate?'late':''}"><span class="d">${fmt(d)}</span><span>${name}</span><span class="tag">${isLate?'이미 지남':diff===0?'오늘':'D-'+diff}</span></div>`}).join('');
+    $('#warn').textContent=late.length?`⚠ ${late.join(', ')} — 잔금까지 시간이 짧아요. 일정을 당기거나 서둘러 문의해야 해요.`:'';
+  }
+  $('#cd').oninput=draw;draw();
+})();
+
+/* demo 2: level -> room */
+(()=>{
+  const CAP=['아직 움츠러든 나','아직 움츠러든 나','고개를 드는 나','고개를 드는 나','조금씩 자라는 용기','조금씩 자라는 용기','내 공간을 아끼는 나','세상 밖으로 나아간 나'];
+  const room=$('#room'),me=$('#me');
+  function draw(){const l=+$('#lv').value;$('#lvn').textContent=l;$('#cap').textContent=`Lv${l} — ${CAP[l-1]}`;
+    const k=(l-1)/7,L=Math.round(14+k*50);
+    room.style.background=l===8?'linear-gradient(#8fd3ff,#d6f1c6)':`hsl(250 ${30-k*10}% ${L}%)`;
+    room.querySelector('.win').style.background=l>=5?'#9ad8ff':l>=3?'#4b5d8f':'#0b1530';
+    room.querySelector('.trash').style.opacity=l<=3?1:0;
+    room.querySelector('.plant').style.opacity=l>=5?1:0;
+    room.querySelector('.rug').style.opacity=l>=7?1:0;
+    room.querySelector('.ppl').style.opacity=l===8?1:0;
+    me.style.transform=l<=2?'scaleY(.62)':l<=3?'scaleY(.9)':'none';me.style.left=l<=2?'8%':l===8?'38%':'44%'}
+  $('#lv').oninput=draw;draw();
+})();
+
+/* contact copy */
+$('#copy').onclick=async()=>{try{await navigator.clipboard.writeText($('#mail').textContent);$('#copy').textContent='Copied'}catch(e){const r=document.createRange();r.selectNodeContents($('#mail'));getSelection().removeAllRanges();getSelection().addRange(r);$('#copy').textContent='Selected'}setTimeout(()=>$('#copy').textContent='Copy',1600)};
+
+/* tiny jazz hip-hop bed (optional) */
+let ac,tm,on=false,step=0,an;
+const BPM=84,SD=60/BPM/4,CH=[[146.83,174.61,220,261.63,329.63],[174.61,196,246.94,329.63],[164.81,196,246.94,293.66],[196,220,233.08,277.18]],RT=[73.42,98,65.41,55];
+function tone(f,t,d,ty,g){const o=ac.createOscillator(),v=ac.createGain();o.type=ty;o.frequency.setValueAtTime(f,t);if(ty==='sine'&&f>100)o.frequency.exponentialRampToValueAtTime(40,t+d);v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(v);v.connect(an);o.start(t);o.stop(t+d)}
+function nz(t,d,g){const b=ac.createBuffer(1,ac.sampleRate*d,ac.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=ac.createBufferSource(),v=ac.createGain(),h=ac.createBiquadFilter();h.type='highpass';h.frequency.value=6500;s.buffer=b;v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(h);h.connect(v);v.connect(an);s.start(t)}
+function key(f,t,d,g){[1,2.005].forEach((m,i)=>{const o=ac.createOscillator(),v=ac.createGain(),lp=ac.createBiquadFilter();o.type=i?'triangle':'sine';o.frequency.value=f*m;lp.type='lowpass';lp.frequency.value=1800;v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g/(i+1.6),t+.015);v.gain.exponentialRampToValueAtTime(.0008,t+d);o.connect(lp);lp.connect(v);v.connect(an);o.start(t);o.stop(t+d+.05)})}
+function tick(){const bar=(step>>4)%4,s=step%16,t=ac.currentTime+.06+(s%2?SD*.32:0);
+  if([0,7,10].includes(s))tone(115,t,.28,'sine',.8);if(s===4||s===12){nz(t,.18,.3);tone(190,t,.1,'triangle',.2)}
+  if(s%2===0)nz(t,.035,s%4===0?.12:.07);if(s===14)nz(t,.14,.08);
+  if(s===0||s===6||s===10)CH[bar].forEach((f,i)=>key(f,t+i*.012,s===0?1.5:.45,.06));
+  if(s===0||s===6||s===11)tone(RT[bar],t,.5,'triangle',.35);if(Math.random()<.18)nz(t+Math.random()*SD,.012,.04);step++}
+$('#aud').onclick=()=>{if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();const g=ac.createGain();g.gain.value=.55;g.connect(ac.destination);an=g}
+  ac.resume();on=!on;$('#aud').setAttribute('aria-pressed',on);$('#aud').textContent=on?'Audio On ●':'Audio Off —';if(on)tm=setInterval(tick,SD*1000);else clearInterval(tm)};
+</script>
+</body>
+</html>
