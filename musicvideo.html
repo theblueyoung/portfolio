@@ -118,25 +118,38 @@ section{position:relative;min-height:100vh;padding:120px 6vw 80px;overflow:hidde
 
 /* singles */
 #singles{background:#0f1020}
-.disc-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:40px}
-.single{cursor:pointer;text-align:center}
-.disc{width:min(260px,70vw);aspect-ratio:1;margin:0 auto;border-radius:50%;background:repeating-radial-gradient(#111 0 3px,#1c1c26 4px 5px);position:relative;transition:transform .6s;box-shadow:0 20px 50px #0008}
-.disc::after{content:"";position:absolute;inset:32%;border-radius:50%;background:var(--c);box-shadow:0 0 0 6px #000}
-.single:hover .disc{animation:spin 2.5s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.single h3{font-family:var(--disp);font-size:28px;margin-top:18px;text-transform:uppercase}
-.single p{color:var(--mute);font-size:14px}
-dialog{margin:auto;max-width:640px;width:92vw;background:var(--card);color:var(--ink);border:2px solid var(--lime);border-radius:24px;padding:32px}
+.disc-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px 28px;margin-top:48px}
+.single{cursor:pointer;position:relative}
+.single.feat{grid-column:1/-1;display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:40px;align-items:center}
+@media(max-width:760px){.single.feat{grid-template-columns:1fr}}
+.cover{position:relative;aspect-ratio:1;width:100%;max-width:420px}
+.disc{position:absolute;top:4%;left:6%;width:92%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(#111 0 3px,#1c1c26 4px 5px);transition:transform .7s cubic-bezier(.2,.8,.2,1);box-shadow:0 10px 30px #0008}
+.disc::after{content:"";position:absolute;inset:34%;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px #000}
+.sleeve{position:absolute;inset:0 8% 0 0;border-radius:10px;overflow:hidden;box-shadow:8px 10px 0 #000a;transition:transform .5s cubic-bezier(.2,.8,.2,1);background:#222}
+.sleeve img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.single:hover .disc{transform:translateX(18%) rotate(180deg);animation:spin 3s linear infinite .5s}
+.single:hover .sleeve{transform:translateX(-4%) rotate(-2deg)}
+@keyframes spin{to{transform:translateX(18%) rotate(540deg)}}
+.single .cover+div{margin-top:26px}.single.feat .cover+div{margin-top:0}
+.single h3{font-family:var(--disp);font-size:30px;margin-top:20px;text-transform:uppercase}
+.single.feat h3{font-size:clamp(44px,6vw,84px);line-height:.95;margin-top:8px}
+.single p{color:#c9c6d3;font-size:14px;margin-top:4px}
+.single .st{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.14em;color:#000;background:var(--lime);padding:3px 10px;border-radius:99px;font-weight:700}
+.single .st.wip{background:var(--pink)}.single .st.sk{background:var(--blue);color:#fff}.single .st.sc{background:#fff}
+dialog{margin:auto;max-width:720px;width:94vw;max-height:90vh;overflow:auto;background:var(--card);color:var(--ink);border:2px solid var(--lime);border-radius:24px;padding:28px}
 dialog::backdrop{background:#000b}
-dialog h3{font-family:var(--disp);font-size:44px;text-transform:uppercase;margin:8px 0 16px}
-dialog dt{color:var(--lime);font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-top:14px}
-dialog dd{margin:0}
+.dhead{display:flex;gap:18px;align-items:flex-start}
+#dImg{width:110px;aspect-ratio:1;object-fit:cover;object-position:top;border-radius:12px;flex:none}
+dialog h3{font-family:var(--disp);font-size:clamp(32px,5vw,48px);text-transform:uppercase;margin:4px 0 8px;line-height:1}
+dialog dt{color:var(--lime);font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-top:18px}
+dialog dd{margin:4px 0 0;font-size:15px}
+dialog dd ul{padding-left:18px}
+.note{font-size:12px;color:var(--mute);margin-top:10px}
 
 /* outro */
 #outro{background:var(--lime);color:#000;display:flex;flex-direction:column;justify-content:center;gap:28px}
 #outro .big{font-size:clamp(60px,13vw,200px)}
 #outro .btn{background:#000;color:var(--lime);align-self:flex-start}
-.note{font-size:12px;color:var(--mute);margin-top:10px}
 #outro .note{color:#000a}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -225,14 +238,10 @@ dialog dd{margin:0}
 <section id="singles" data-track="Track 05 — Singles (Selected Work)">
   <div class="tag">SCENE 05 · SELECTED WORK</div>
   <h2 class="big reveal" style="font-size:clamp(40px,8vw,120px)">Singles</h2>
-  <div class="disc-wrap">
-    <div class="single reveal" data-i="0"><div class="disc" style="--c:var(--lime)"></div><h3>Project A</h3><p>모바일 온보딩 리디자인</p></div>
-    <div class="single reveal" data-i="1"><div class="disc" style="--c:var(--pink)"></div><h3>Project B</h3><p>대시보드 정보 구조 재설계</p></div>
-    <div class="single reveal" data-i="2"><div class="disc" style="--c:var(--blue)"></div><h3>Project C</h3><p>디자인 시스템 구축</p></div>
-  </div>
-  <p class="note">※ 지금은 샘플 문구입니다. 실제 작업물(문제 → 과정 → 결과)로 교체하세요.</p>
+  <p class="reveal" style="max-width:560px;color:var(--mute);margin-top:12px">앨범(앱)을 눌러 기획의도와 과정을 보고, 프로토타입을 직접 눌러보세요.</p>
+  <div class="disc-wrap" id="singlesGrid"></div>
 </section>
-<dialog id="dlg"><div class="tag" id="dTag"></div><h3 id="dT"></h3><dl id="dBody"></dl><p style="margin-top:20px"><button class="btn ghost" id="dClose">닫기 ✕</button></p></dialog>
+<dialog id="dlg"><div class="dhead"><img id="dImg" alt=""><div><div class="tag" id="dTag"></div><h3 id="dT"></h3><span class="pill" id="dSt" style="color:var(--lime)"></span></div></div><dl id="dBody"></dl><p style="margin-top:22px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" id="dOpen" target="_blank" rel="noopener">프로토타입 열기 ↗</a><button class="btn ghost" id="dClose">닫기 ✕</button></p></dialog>
 
 <!-- 06 OUTRO -->
 <section id="outro" data-track="Track 06 — Outro (Let's work)">
@@ -262,16 +271,28 @@ function tone(f,t,d,type,g){const o=ac.createOscillator(),v=ac.createGain();o.ty
   v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(v);v.connect(analyser);o.start(t);o.stop(t+d)}
 function noiseHit(t,d,g){const b=ac.createBuffer(1,ac.sampleRate*d,ac.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;
   const s=ac.createBufferSource(),v=ac.createGain(),h=ac.createBiquadFilter();h.type='highpass';h.frequency.value=7000;s.buffer=b;v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(h);h.connect(v);v.connect(analyser);s.start(t)}
+/* jazz hip-hop: 84bpm, swung boom-bap + rhodes-ish chords (Dm9 | G13 | Cmaj9 | A7b9) */
+const BPM=84,SD=60/BPM/4;
+const CH=[[146.83,174.61,220,261.63,329.63],[174.61,196,246.94,329.63],[164.81,196,246.94,293.66],[196,220,233.08,277.18]];
+const ROOT=[73.42,98,65.41,55];
+function keys(f,t,d,g){[1,2.005].forEach((m,i)=>{const o=ac.createOscillator(),v=ac.createGain(),lp=ac.createBiquadFilter();
+  o.type=i?'triangle':'sine';o.frequency.value=f*m;lp.type='lowpass';lp.frequency.value=1800;
+  v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g/(i+1.6),t+.015);v.gain.exponentialRampToValueAtTime(.0008,t+d);
+  o.connect(lp);lp.connect(v);v.connect(analyser);o.start(t);o.stop(t+d+.05)})}
+function snare(t){noiseHit(t,.18,.35);tone(190,t,.1,'triangle',.25)}
 function tick(){
-  const t=ac.currentTime+.05,k=[0,3,6,10],bass=[55,55,65,49];
-  if(k.includes(step%16))tone(120,t,.25,'sine',.9);
-  if(step%8===4)noiseHit(t,.15,.5);
-  if(step%2===0)noiseHit(t,.04,.12);
-  if(step%4===0)tone(bass[(step>>2)%4],t,.4,'triangle',.25);
+  const bar=(step>>4)%4,s=step%16,t=ac.currentTime+.06+(s%2?SD*.32:0);
+  if([0,7,10].includes(s))tone(115,t,.28,'sine',.95);
+  if(s===4||s===12)snare(t);
+  if(s%2===0)noiseHit(t,.035,s%4===0?.14:.08);
+  if(s===14)noiseHit(t,.14,.1);
+  if(s===0||s===6||s===10)CH[bar].forEach((f,i)=>keys(f,t+i*.012,s===0?1.5:.45,.07));
+  if(s===0||s===6||s===11)tone(ROOT[bar],t,.5,'triangle',.4);
+  if(Math.random()<.18)noiseHit(t+Math.random()*SD,.012,.05); // vinyl crackle
   step++;
 }
 function toggleBeat(on=!playing){
-  if(on){beat();timer=setInterval(tick,60000/92/4);playing=true;$('#pp').textContent='❚❚'}
+  if(on){beat();timer=setInterval(tick,SD*1000);playing=true;$('#pp').textContent='❚❚'}
   else{clearInterval(timer);playing=false;$('#pp').textContent='▶'}
 }
 $('#pp').onclick=()=>toggleBeat();
@@ -298,7 +319,7 @@ $$('.reveal').forEach(el=>io.observe(el));
   let P=[];
   function size(){W=c.width=c.offsetWidth*devicePixelRatio;H=c.height=c.offsetHeight*devicePixelRatio}
   size();addEventListener('resize',size);
-  P=words.map((w,i)=>({w,x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*1.2,vy:(Math.random()-.5)*1.2,s:(14+Math.random()*26)*devicePixelRatio,c:cols[i%5]}));
+  const small=innerWidth<700;P=(small?words.filter((_,i)=>i%2===0):words).map((w,i)=>({w,x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*1.2,vy:(Math.random()-.5)*1.2,s:(small?10+Math.random()*12:14+Math.random()*26)*devicePixelRatio,c:cols[i%5]}));
   $('#hero').addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();m.x=(e.clientX-r.left)*devicePixelRatio;m.y=(e.clientY-r.top)*devicePixelRatio});
   (function loop(){
     x.clearRect(0,0,W,H);
@@ -308,7 +329,7 @@ $$('.reveal').forEach(el=>io.observe(el));
       p.vx*=.97;p.vy*=.97;p.vx+=(Math.random()-.5)*.1;p.vy+=(Math.random()-.5)*.1;
       if(!RM){p.x+=p.vx;p.y+=p.vy}
       if(p.x<-300)p.x=W+100;if(p.x>W+300)p.x=-100;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-      x.font=`700 ${p.s}px "Space Grotesk","Noto Sans KR"`;x.fillStyle=p.c;x.globalAlpha=.75;x.fillText(p.w,p.x,p.y);
+      x.font=`700 ${p.s}px "Space Grotesk","Noto Sans KR"`;x.fillStyle=p.c;x.globalAlpha=small?.4:.75;x.fillText(p.w,p.x,p.y);
     }
     requestAnimationFrame(loop);
   })();
@@ -398,15 +419,40 @@ $$('.reveal').forEach(el=>io.observe(el));
   $('#phone').onclick=e=>e.currentTarget.classList.toggle('hi');
 })();
 
-/* ---------- singles (sample copy) ---------- */
+/* ---------- singles: real projects ---------- */
 (()=>{
   const D=[
-    {t:'Project A',s:'모바일 온보딩 리디자인',p:'신규 사용자 이탈률이 높음',pr:'리서치 → 사용자 여정 → 프로토타입 → 테스트',r:'(여기에 실제 성과 지표)'},
-    {t:'Project B',s:'대시보드 정보 구조 재설계',p:'핵심 정보 탐색에 시간이 오래 걸림',pr:'카드 소팅 → IA → 와이어프레임 → UI',r:'(여기에 실제 성과 지표)'},
-    {t:'Project C',s:'디자인 시스템 구축',p:'화면마다 컴포넌트가 달라 일관성이 부족함',pr:'인벤토리 → 토큰 → 컴포넌트 → 문서화',r:'(여기에 실제 성과 지표)'}];
-  $$('.single').forEach(el=>el.onclick=()=>{const d=D[el.dataset.i];
-    $('#dTag').textContent=d.s;$('#dT').textContent=d.t;
-    $('#dBody').innerHTML=`<dt>Problem</dt><dd>${d.p}</dd><dt>Process</dt><dd>${d.pr}</dd><dt>Result</dt><dd>${d.r}</dd>`;$('#dlg').showModal()});
+   {k:'24dday',pos:'50% 58%',feat:1,c:'var(--lime)',t:'24dday',s:'이사할 때 할 일과 일정을 순서대로 챙겨주는 이사 도우미',st:'FINISHED · 모바일 프로토타입',cls:'',
+    url:'projects/24dday/index.html',
+    rows:[['기획의도','이사는 계약·대출·서류·청소·전입신고가 얽힌 큰일인데, 모든 일이 "잔금일" 하나를 기준으로 움직여요. 그래서 잔금일 D-day를 중심에 두고 할 일을 역산해서 챙겨주는 앱으로 기획했어요.'],
+     ['타깃','이사가 처음이거나, 같이 사는 사람과 과정을 공유하고 싶은 20~50대. 가독성 최우선 — 글보다 시각적 표현, 용어 한 줄 설명, 한 화면에 한 행동.'],
+     ['핵심 설계','<ul><li>매도와 매수를 하나의 "이사 프로젝트"로 묶음 (나가는 집 잔금 → 들어가는 집 잔금)</li><li>날짜 하나를 바꾸면 나머지가 같이 움직이고, 순서가 꼬이면 경고</li><li>가족·배우자와 일정 공유, 담당자 지정, 서류 체크리스트(전세사기 방지 체크 포함)</li><li>하단 5탭 IA: 홈 · 일정 · 자금 · 서비스 · 커뮤니티</li></ul>'],
+     ['과정','문제 정의 → 해외 레퍼런스(My Move, PEXA Key, Rello, Muving) 리서치 → 거래 유형별(매매·전세·월세) 타임라인 설계 → IA → 스토리보드 → 디자인 A(대시보드형) 선택 → 컬러 3안 탐색 → 인터랙티브 프로토타입 → Figma 프로토타입'],
+     ['결과','화면 45개 규모의 모바일 프로토타입을 완성. (사용자 테스트 지표는 아직 없음)']]},
+   {k:'todottodot',c:'var(--pink)',t:'토닥토닥',s:'작은 자기돌봄 미션으로 자존감을 키우는 픽셀 캐릭터 앱',st:'PROTOTYPE',cls:'wip',
+    url:'projects/todottodot/index.html',
+    rows:[['기획의도','"캐릭터가 방을 청소할 때, 나도 진짜 내 방을 청소한다." 화면 속 캐릭터와 같은 행동을 함께하며 "같이 해낸 느낌"으로 작은 성공을 쌓게 해요.'],
+     ['핵심 루프','마음 체크 → 기분에 맞는 미션 추천 → 캐릭터와 함께 실제 행동(타이머) → 완료·레벨업 시 방이 점점 밝아짐 (Lv1 어두운 방 → Lv8 공원으로 외출)'],
+     ['설계 원칙','<ul><li>벌점 없음: 스탯이 줄지 않고, 중간에 멈춰도 "여기까지만 해도 괜찮아요"</li><li>성별 선택 없는 포용적 캐릭터 (피부톤 7단계·헤어 9종·히잡·휠체어 등 확장 고려)</li><li>위기 상담 안내 상시 노출</li><li>한국어/영어 전환</li></ul>'],
+     ['결과','미션 10종과 5단계 성장 장면이 작동하는 모바일 웹 프로토타입. 이미지 없이 코드로 그린 픽셀 캐릭터 렌더러.']]},
+   {k:'memory',c:'var(--blue)',t:'응답하라 1982',s:'친구들과 사진첩·교환일기·음악을 나누는 레트로 앱',st:'CONCEPT · 시안',cls:'sk',
+    url:'projects/memory/eungdap-1982.html',
+    rows:[['기획의도','실물 사진첩과 교환일기의 온기를 되살려, 친한 친구들끼리만 쓰는 작은 추억 공간을 만들어요.'],
+     ['구성','미니홈피 · 방명록 · 사진(스캔 연출) · 음악 · 다이어리(교환일기) · 삐삐번호'],
+     ['설계 메모','음악은 파일 재생이 아니라 스트리밍 링크 공유 방식(저작권 고려). 이름과 고유 용어는 출시 전 새로 정해야 해요.'],
+     ['결과','두 가지 콘셉트 시안(오래된 서랍 / 응답하라 1982)을 만들고 그중 하나를 발전시킴.']]},
+   {k:'jeju',c:'#fff',t:'Visit Jeju',s:'제주 슬로우 트래블 관광 웹사이트',st:'SCHOOL PROJECT · USYD',cls:'sc',
+    url:'projects/jeju/index.html',
+    rows:[['개요','모바일 우선으로 만든 5페이지 관광 웹사이트. HTML/CSS만으로 구현(JavaScript 없음).'],
+     ['구현','Flexbox와 미디어쿼리로 반응형 구성, CSS 전용 햄버거 메뉴.'],
+     ['의미','코드로 구조를 직접 짜본 첫 단계 — 지금 프로토타입을 직접 만드는 바탕이 된 작업.']]}];
+  const g=$('#singlesGrid');
+  D.forEach((d,i)=>{const e=document.createElement('div');e.className='single reveal'+(d.feat?' feat':'');e.dataset.i=i;
+    e.innerHTML=`<div class="cover"><div class="disc" style="--c:${d.c}"></div><div class="sleeve"><img src="assets/covers/${d.k}.png" alt="${d.t} 화면" loading="lazy" style="object-position:${d.pos||'top'}"></div></div>
+      <div><div class="tag">${d.feat?'SINGLE No.1 — 대표작':'SINGLE No.'+(i+1)}</div><h3>${d.t}</h3><p>${d.s}</p><span class="st ${d.cls}">${d.st}</span></div>`;
+    io.observe(e);g.appendChild(e);
+    e.onclick=()=>{$('#dTag').textContent=d.s;$('#dT').textContent=d.t;$('#dSt').textContent=d.st;$('#dImg').src=`assets/covers/${d.k}.png`;$('#dImg').style.objectPosition=d.pos||'top';
+      $('#dBody').innerHTML=d.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');$('#dOpen').href=d.url;$('#dlg').showModal()}});
   $('#dClose').onclick=()=>$('#dlg').close();
   $('#dlg').onclick=e=>{if(e.target===e.currentTarget)e.currentTarget.close()};
   $('#mail').onclick=()=>location.href='mailto:your@email.com';

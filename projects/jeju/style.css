@@ -1,0 +1,582 @@
+/*********************************************************************** 
+Reset and default styling
+************************************************************************/
+
+* {
+  font-family: "Roboto", sans-serif;
+  list-style: none;
+  text-decoration: none;
+  border-collapse: collapse;
+  margin: 0px;
+  padding: 0px;
+  color: black;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f8fafb;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/*********************************************************************** 
+Index page
+************************************************************************/
+
+.unique-destination {
+  margin: 80px 0;
+  text-align: center;
+  background-color: #f8fafb;
+}
+
+.unique-destination p {
+  margin-top: 30px;
+  margin-bottom: 70px;
+}
+
+.discover-more-container {
+  background-color: #679369;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px 0;
+  gap: 20px;
+}
+
+.discover-more {
+  width: 331.64px;
+  height: 457px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+#about-jeju {
+  background: url("assets/rock.jpeg") no-repeat center;
+  background-size: cover;
+}
+
+#things-to-do {
+  background: url("assets/women.jpeg") no-repeat center;
+  background-size: cover;
+}
+
+#gallery {
+  background: url("assets/wind.jpeg") no-repeat center;
+  background-size: cover;
+}
+
+.discover-more div {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.discover-more h2 {
+  text-align: center;
+  color: white;
+  font-weight: 700;
+}
+
+.discover-more a {
+  width: 50%;
+  margin: 25px auto;
+  color: white;
+  background-color: transparent;
+  border: 2px solid white;
+  padding: 7px 11px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+#trail {
+  background: url("assets/trail.jpeg") no-repeat center;
+  background-size: cover;
+  height: 50vh;
+}
+
+#trail .hero-text {
+  width: 100%;
+}
+
+#trail h1 {
+  text-align: center;
+}
+
+/*********************************************************************** 
+About page
+************************************************************************/
+
+.hero#story-of-jeju {
+  background: url("assets/about-jeju.png") no-repeat center;
+  background-size: cover;
+}
+
+#jeju-outline {
+  position: relative;
+  background-color: #679369;
+  text-align: center;
+}
+
+#jeju-outline img {
+  display: block;
+  margin: 0 auto;
+  padding: 70px 0;
+}
+
+#jeju-outline div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 96px;
+  font-weight: 700;
+}
+
+.about-jeju-container {
+  margin: 47px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.about-jeju-item {
+  width: 80%;
+  border: 1px solid #679369;
+  border-radius: 5px;
+  padding: 17px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.about-jeju-item > div {
+  width: 100%;
+  border-radius: 5px;
+}
+
+@media (min-width: 768px) {
+  .about-jeju-item {
+    width: 60%;
+  }
+
+  .about-jeju-item:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+
+  .about-jeju-item > div {
+    width: 48%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-jeju-item {
+    width: 50%;
+  }
+}
+
+.about-jeju-item-text,
+.about-jeju-item-text p {
+  margin-top: 28px;
+}
+
+.about-jeju-item-text h4 {
+  font-weight: 700;
+}
+
+#statue-img {
+  background: url("assets/statue.jpeg") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 4 / 3;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+#mandarin-img {
+  background: url("assets/mandarin.jpeg") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 4 / 3;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+#diver-img {
+  background: url("assets/diver.jpeg") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 4 / 3;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+/*********************************************************************** 
+Things to do page
+************************************************************************/
+
+.hero#experience-and-explore {
+  background: url("assets/experience-and-explore.png") no-repeat center;
+  background-size: cover;
+  height: 80vh;
+  min-height: 600px;
+}
+
+#halla-img {
+  background: url("assets/halla.jpeg") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 16 / 9;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+#sungsan-img {
+  background: url("assets/sungsan.jpeg") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 16 / 9;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+#jusangjeolli-img {
+  background: url("assets/cliff.png") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 16 / 9;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+#haenyeo-img {
+  background: url("assets/haenyeo.png") no-repeat center;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 16 / 9;
+  padding-top: 0;
+  height: auto;
+  min-height: 0;
+}
+
+/*********************************************************************** 
+Gallery page
+************************************************************************/
+
+.hero#gallery {
+  background: url("assets/gallery.jpeg") no-repeat center;
+  background-size: cover;
+}
+
+.gallery-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 80px auto;
+  gap: 20px;
+  max-width: 1280px;
+}
+
+.gallery-container img {
+  display: inline-block;
+  width: 80%;
+  padding: 15px;
+  border: 1px solid #679369;
+  border-radius: 5px;
+}
+
+@media (min-width: 768px) {
+  .gallery-container img {
+    display: inline-block;
+    width: 30%;
+  }
+}
+
+/*********************************************************************** 
+Ollie trail page
+************************************************************************/
+
+.hero#ollie {
+  background: url("assets/ollie.png") no-repeat center;
+  background-size: cover;
+}
+
+.jeju-map-container {
+  display: flex;
+  justify-content: center;
+}
+
+.jeju-map-container img {
+  display: block;
+  width: 80%;
+  max-width: 1280px;
+}
+
+/*********************************************************************** 
+Utility classes
+************************************************************************/
+
+.p-h-30 {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.p-y-60 {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.bg-green {
+  background-color: #679369;
+}
+
+/*********************************************************************** 
+Common components
+************************************************************************/
+
+/* Hero */
+
+.hero {
+  background: url("assets/house.jpg") no-repeat right bottom;
+  background-size: cover;
+  height: 80vh;
+  color: white;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.hero.variant-2 {
+  padding-bottom: 112px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-text h1,
+.hero-text p,
+.hero i {
+  color: white;
+  display: flex;
+  font-weight: 700;
+}
+
+h1.hero-text {
+  color: white;
+}
+
+/* Video */
+
+.video-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 50px;
+}
+
+@media (min-width: 768px) {
+  .video-container {
+    width: 50%;
+  }
+}
+
+.iframe-container {
+  position: relative;
+  padding-top: 56.25%;
+}
+
+.iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Header */
+
+.header {
+  background-color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  padding-top: 15px;
+}
+
+/* Logo */
+
+.logo {
+  display: inline-block;
+  color: white;
+  font-size: 60px;
+}
+
+.logo img {
+  width: 80px;
+  height: auto;
+}
+
+/* Nav menu */
+
+.nav {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-color: white;
+  overflow: hidden;
+}
+
+.menu a {
+  display: block;
+  padding: 30px;
+  color: black;
+}
+
+.menu a:hover {
+  background-color: lightgray;
+}
+
+.nav {
+  max-height: 0;
+  transition: max-height 0.5s ease-out;
+}
+
+.nav .selected {
+  border-bottom: 1px solid black;
+  padding: 5px;
+  margin: 2px;
+}
+
+.nav ul li:last-child a span {
+  background-color: #f7b32b;
+  padding: 10px;
+  border-radius: 23px;
+}
+
+/* Menu Icon */
+
+.hamb {
+  cursor: pointer;
+  float: right;
+  padding: 40px 20px;
+}
+
+.hamb-line {
+  background: black;
+  display: block;
+  height: 2px;
+  position: relative;
+  width: 24px;
+}
+
+.hamb-line::before,
+.hamb-line::after {
+  background: black;
+  content: "";
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all 0.2s ease-out;
+  width: 100%;
+}
+
+.hamb-line::before {
+  top: 5px;
+}
+
+.hamb-line::after {
+  top: -5px;
+}
+
+.side-menu {
+  display: none;
+}
+
+/* Toggle menu icon */
+
+.side-menu:checked ~ nav {
+  max-height: 100%;
+}
+
+.side-menu:checked ~ .hamb .hamb-line {
+  background: transparent;
+}
+
+.side-menu:checked ~ .hamb .hamb-line::before {
+  transform: rotate(-45deg);
+  top: 0;
+}
+
+.side-menu:checked ~ .hamb .hamb-line::after {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    max-height: none;
+    top: 0;
+    position: relative;
+    float: right;
+    width: fit-content;
+    background-color: transparent;
+  }
+
+  .menu li {
+    float: left;
+  }
+
+  .menu a:hover {
+    background-color: transparent;
+    color: grey;
+  }
+
+  .hamb {
+    display: none;
+  }
+}
+
+/* Footer */
+
+footer {
+  background-color: #84a986;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+}
+
+.socials > * {
+  font-weight: bold;
+  margin: 0 5px;
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="eng">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>GALLERY</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://kit.fontawesome.com/b7c25e9005.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <!-- Navigation bar -->
+    <header class="header">
+      <!-- Logo -->
+      <a href="index.html" class="logo p-h-30"><img src="assets/logo.png" alt="logo" /></a>
+
+      <!-- Hamburger icon -->
+      <input class="side-menu" type="checkbox" id="side-menu" />
+      <label class="hamb" for="side-menu"
+        ><span class="hamb-line"></span
+      ></label>
+
+      <!-- Menu -->
+      <nav class="nav">
+        <ul class="menu">
+          <li><a href="about-jeju.html"><span>ABOUT JEJU</span></a></li>
+          <li><a href="things-to-do.html"><span>THINGS TO DO</span></a></li>
+          <li><a href="gallery.html"><span class="selected">GALLERY</span></a></li>
+          <li><a href="ollie-trail.html"><span>OLLIE TRAIL</span></a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main content -->
+    <main>
+      <section class="hero p-h-30 variant-2" id="gallery">
+        <div class="hero-text">
+          <h1>GALLERY</h1>
+          <p>Photos of Jeju</p>
+        </div>
+      </section>
+
+      <div class="gallery-container">
+        <img src="assets/gallery-1.jpeg" alt="cherry blossom">
+        <img src="assets/gallery-2.png" alt="people on the beach">
+        <img src="assets/gallery-3.jpeg" alt="maple trees">
+        <img src="assets/gallery-4.jpeg" alt="snowy mountain">
+        <img src="assets/gallery-5.jpeg" alt="golden flowers">
+        <img src="assets/gallery-6.jpeg" alt="lava ocean">
+        <img src="assets/gallery-7.png" alt="jejuolle route">
+        <img src="assets/gallery-8.jpeg" alt="green tea field">
+        <img src="assets/gallery-9.jpeg" alt="jejudo hallasan crater lake">
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-h-30">
+      <a href="#" class="logo"><img src="assets/logo.png" alt="logo" /></a>
+      <div class="socials">
+        <span>Follow us</span>
+        <i class="fa-brands fa-facebook fa-xl"></i>
+        <i class="fa-brands fa-instagram fa-xl"></i>
+        <i class="fa-brands fa-linkedin fa-xl"></i>
+        <i class="fa-brands fa-twitter fa-xl"></i>
+      </div>
+    </footer>
+  </body>
+</html>
