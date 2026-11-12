@@ -26,22 +26,17 @@ a{color:inherit}
 #load .nm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans KR',sans-serif;font-weight:700;font-size:clamp(150px,36vw,600px);line-height:1;color:var(--acc);letter-spacing:-.05em;padding-bottom:4vh}
 #load .nm small{font-size:.22em;align-self:flex-start;margin-top:.6em;letter-spacing:0;font-family:var(--disp);font-weight:300;color:var(--ink)}
 #load .curtain{position:absolute;inset:0;background:#0c0c0c;will-change:transform}
-#load .char{position:absolute;right:100%;bottom:5vh;width:clamp(260px,30vw,470px);height:auto;overflow:visible;margin-right:-4px;animation:bob .5s ease-in-out infinite alternate;--skin:#f1c9a5;--hair:#151515;--top:#6a4bff;--bottom:#2b2b3a;--shoe:#fff}
-@keyframes bob{to{transform:translateY(-5px)}}
-#load .pose{display:none;transform-origin:150px 350px}
-#load .char[data-p="0"] .p0,#load .char[data-p="1"] .p1,#load .char[data-p="2"] .p2,#load .char[data-p="3"] .p3{display:block;animation:pop .3s cubic-bezier(.2,.8,.2,1)}
+#load .char{position:absolute;right:100%;bottom:5vh;margin-right:-2px;width:0;height:0}
+#load .sp{position:absolute;right:0;bottom:0;display:none;transform-origin:50% 100%;max-width:none}
+#load .char[data-p="0"] .sp0,#load .char[data-p="1"] .sp1,#load .char[data-p="2"] .sp2,#load .char[data-p="3"] .sp3{display:block;animation:pop .3s cubic-bezier(.2,.8,.2,1),bounce .46s ease-in-out .3s infinite alternate}
 @keyframes pop{from{transform:scale(.9);opacity:0}}
-#load .kick{transform-origin:114px 220px;animation:kick .4s ease-in-out infinite alternate}@keyframes kick{to{transform:rotate(-9deg)}}
-#load .arc{animation:arc .35s ease-out infinite alternate}#load .arc:nth-of-type(2){animation-delay:.1s}#load .arc:nth-of-type(3){animation-delay:.2s}@keyframes arc{from{opacity:.15}to{opacity:1}}
-#load .pan{transform-origin:212px 150px;animation:flip .4s ease-in-out infinite alternate}@keyframes flip{to{transform:rotate(-14deg)}}
-#load .food{animation:hop .4s ease-in-out infinite alternate}@keyframes hop{to{transform:translateY(-16px)}}
-#load .scr{animation:glow .5s ease-in-out infinite alternate}@keyframes glow{from{opacity:.8}}
+@keyframes bounce{to{transform:translateY(-6px) rotate(.8deg)}}
 #load .meta,#load .top2{position:absolute;left:clamp(16px,3vw,32px);right:clamp(16px,3vw,32px);display:flex;justify-content:space-between;align-items:flex-end;mix-blend-mode:difference;color:#fff;z-index:3;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 #load .meta{bottom:clamp(16px,3vw,28px)}#load .top2{top:clamp(16px,3vw,28px);align-items:flex-start}
 #ld{font-family:var(--disp);font-weight:100;font-size:clamp(44px,7vw,96px);line-height:.8;letter-spacing:-.03em}
 #steps{display:flex;gap:clamp(8px,1.6vw,22px);flex-wrap:wrap;justify-content:flex-end}
 #steps span{opacity:.35;transition:opacity .25s}#steps span.on{opacity:1}
-#skip{pointer-events:auto;cursor:pointer;border:1px solid #fff;border-radius:99px;padding:5px 14px;font:inherit;color:#fff;background:none;letter-spacing:.1em;text-transform:uppercase}
+#skip{white-space:nowrap;pointer-events:auto;cursor:pointer;border:1px solid #fff;border-radius:99px;padding:5px 14px;font:inherit;color:#fff;background:none;letter-spacing:.1em;text-transform:uppercase}
 #skip:hover{background:#fff;color:#000}
 
 /* fixed chrome */
@@ -189,7 +184,7 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--acc)}
 
 <div id="load" aria-hidden="true">
   <div class="nm">유영<small>©</small></div>
-  <div class="curtain" id="curtain"><svg class="char" id="char" viewBox="0 0 300 370" fill="none" stroke-linecap="round" stroke-linejoin="round" data-p="0"></svg></div>
+  <div class="curtain" id="curtain"><div class="char" id="char" data-p="0"></div></div>
   <div class="top2"><span>Portfolio — 2026</span><button id="skip" type="button">Skip →</button><span>UX · Interaction Designer</span></div>
   <div class="meta"><div id="ld">0</div><div id="steps"><span>01 겨루기</span><span>02 랩</span><span>03 요리</span><span>04 디자인</span></div></div>
 </div>
@@ -292,41 +287,12 @@ const P=[
    ['Build','Flexbox와 미디어쿼리로 반응형 구성, CSS 전용 햄버거 메뉴.'],
    ['Why it matters','코드로 구조를 직접 짜본 첫 단계. 지금 프로토타입을 직접 만드는 바탕이 된 작업.']]}];
 
-/* loader: placeholder character poses (replace with real illustrations later) */
+/* loader: illustrated character poses (taekwondo, rap, cooking, design) */
 (()=>{
-  const L=(d,c='var(--skin)')=>`<path d="${d}" stroke="#111" stroke-width="27"/><path d="${d}" style="stroke:${c}" stroke-width="19"/>`;
-  const H=(x,y)=>`<circle cx="${x}" cy="${y}" r="12" style="fill:var(--skin)" stroke="#111" stroke-width="5"/>`;
-  const SH=(x,y,rot=0)=>`<path d="M${x-24} ${y-16} L${x+6} ${y-16} Q${x+30} ${y-6} ${x+26} ${y+6} L${x-24} ${y+6}Z" style="fill:var(--shoe)" stroke="#111" stroke-width="5" transform="rotate(${rot} ${x} ${y})"/>`;
-  const SHORTS=(x)=>`<path d="M${x-26} 214 L${x+22} 214 L${x+28} 246 L${x-30} 248Z" style="fill:var(--bottom)" stroke="#111" stroke-width="5"/>`;
-  const TOP=(d)=>`<path d="${d}" style="fill:var(--top)" stroke="#111" stroke-width="6"/>`;
-  const HEAD=(cx,cy,o={})=>`<circle cx="${cx}" cy="${cy}" r="36" style="fill:var(--skin)" stroke="#111" stroke-width="6"/>
-    <path d="M${cx-36} ${cy-4} Q${cx-38} ${cy-44} ${cx} ${cy-42} Q${cx+38} ${cy-44} ${cx+34} ${cy-8} Q${cx+18} ${cy-26} ${cx-8} ${cy-24} Q${cx-26} ${cy-20} ${cx-36} ${cy-4}Z" style="fill:var(--hair)" stroke="#111" stroke-width="5"/>
-    ${o.hat?`<path d="M${cx-30} ${cy-30} Q${cx-44} ${cy-70} ${cx-14} ${cy-66} Q${cx} ${cy-92} ${cx+16} ${cy-66} Q${cx+44} ${cy-70} ${cx+30} ${cy-30}Z" fill="#fff" stroke="#111" stroke-width="5"/>`:`<path d="M${cx-34} ${cy-8} Q${cx} ${cy-62} ${cx+34} ${cy-8}" stroke="#111" stroke-width="7"/>`}
-    <circle cx="${cx-30}" cy="${cy+6}" r="13" style="fill:var(--top)" stroke="#111" stroke-width="6"/>
-    <circle cx="${cx+16}" cy="${cy}" r="3.5" fill="#111"/>
-    ${o.open?`<ellipse cx="${cx+22}" cy="${cy+19}" rx="7" ry="9" fill="#111"/>`:`<path d="M${cx+8} ${cy+18} Q${cx+18} ${cy+24} ${cx+28} ${cy+16}" stroke="#111" stroke-width="4"/>`}`;
-  const P0=`<g class="pose p0">${L('M104 222 L100 288 L98 336')}${SH(98,350)}
-    <g class="kick">${L('M114 220 L190 196 L262 170')}${SH(272,168,-18)}</g>${SHORTS(108)}
-    ${TOP('M96 218 L128 218 Q134 150 112 112 L82 112 Q78 170 96 218Z')}${L('M90 128 L62 164 L52 138','var(--top)')}${H(52,136)}${L('M96 130 L138 150 L150 124','var(--top)')}${H(150,122)}${HEAD(92,70)}</g>`;
-  const P1=`<g class="pose p1">${L('M100 222 L82 286 L74 336')}${SH(74,350)}${L('M118 222 L140 286 L150 336')}${SH(150,350)}${SHORTS(110)}
-    ${TOP('M92 220 L130 220 Q146 160 130 116 L100 116 Q84 170 92 220Z')}${L('M106 132 L66 156 L44 126','var(--top)')}${H(42,124)}
-    ${L('M124 130 L168 148 L158 98','var(--top)')}${H(157,94)}<rect x="150" y="64" width="14" height="26" rx="7" fill="#333" stroke="#111" stroke-width="4" transform="rotate(18 157 77)"/>
-    ${HEAD(122,70,{open:1})}
-    <path class="arc" d="M200 60 Q218 84 200 108" style="stroke:var(--acc)" stroke-width="6"/><path class="arc" d="M222 48 Q252 84 222 120" style="stroke:var(--acc)" stroke-width="6"/><path class="arc" d="M244 36 Q286 84 244 132" style="stroke:var(--acc)" stroke-width="6"/></g>`;
-  const P2=`<g class="pose p2">${L('M102 222 L94 286 L90 336')}${SH(90,350)}${L('M120 222 L132 286 L136 336')}${SH(136,350)}${SHORTS(110)}
-    ${TOP('M92 220 L130 220 Q146 160 130 116 L100 116 Q84 170 92 220Z')}${L('M106 134 L78 170 L100 206','var(--top)')}${H(102,208)}
-    ${HEAD(122,72,{hat:1})}${L('M124 130 L172 152 L210 150','var(--top)')}
-    <g class="pan"><path d="M214 150 L244 150" stroke="#111" stroke-width="7"/><ellipse cx="266" cy="152" rx="28" ry="8" fill="#444" stroke="#111" stroke-width="5"/></g>${H(212,150)}
-    <circle class="food" cx="252" cy="122" r="7" fill="#ff7a2f"/><circle class="food" cx="272" cy="104" r="6" fill="#7bd26b" style="animation-delay:.12s"/><circle class="food" cx="240" cy="96" r="5" fill="#ffd84d" style="animation-delay:.2s"/></g>`;
-  const P3=`<g class="pose p3"><rect x="62" y="250" width="58" height="12" rx="4" fill="#333" stroke="#111" stroke-width="4"/><path d="M90 262 L90 350" stroke="#111" stroke-width="7"/>
-    <rect x="162" y="214" width="130" height="10" fill="#333" stroke="#111" stroke-width="4"/><path d="M276 224 L276 352" stroke="#111" stroke-width="7"/>
-    ${L('M96 250 L152 256 L158 334')}${SH(160,350)}<path d="M82 238 L124 238 L150 264 L122 264Z" style="fill:var(--bottom)" stroke="#111" stroke-width="5"/>
-    ${TOP('M82 246 L118 246 Q126 184 110 146 L82 146 Q76 200 82 246Z')}${HEAD(110,104)}
-    <path d="M200 202 L292 214 L292 216 L200 212Z" fill="#cfcfcf" stroke="#111" stroke-width="4"/>
-    <rect class="scr" x="216" y="112" width="74" height="86" rx="5" style="fill:var(--acc)" stroke="#111" stroke-width="5"/>
-    <rect x="226" y="124" width="40" height="8" rx="3" fill="#fff"/><rect x="226" y="140" width="54" height="26" rx="3" fill="#ffffff55"/><circle cx="270" cy="182" r="7" fill="#ffd84d"/>
-    ${L('M104 158 L150 192 L192 204','var(--top)')}${H(194,204)}</g>`;
-  const ch=$('#char');ch.innerHTML='<ellipse cx="150" cy="362" rx="130" ry="6" fill="#00000022"/>'+P0+P1+P2+P3;
+  const SPR={tkd:'assets/character/tkd.png',rap:'assets/character/rap.png',cook:'assets/character/cook.png',design:'assets/character/design.png'};
+  const SZ={tkd:[245,277],rap:[190,280],cook:[280,259],design:[223,247]};
+  const ch=$('#char'),k=Math.min(1.5,Math.max(.8,innerHeight/620),innerWidth/440);
+  ['tkd','rap','cook','design'].forEach((n,i)=>{const im=new Image();im.src=SPR[n];im.alt='';im.className='sp sp'+i;im.style.width=(SZ[n][0]*k)+'px';im.style.height=(SZ[n][1]*k)+'px';ch.appendChild(im)});
   const cu=$('#curtain'),steps=$$('#steps span');
   let seen=null;try{seen=sessionStorage.getItem('seen')}catch(e){}
   const D=seen?2400:6000,t0=performance.now();let done=false,ph=-1;
