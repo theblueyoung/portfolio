@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>유영 Meadow of Tapes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@200;300;500;700&display=swap" rel="stylesheet">
+<style>
+/* Concept D: a gallery with framed light artworks -> step into the light -> an astronaut with headphones
+   falls onto a green meadow of yellow & white flowers -> project cassettes float in the air -> click: card opens. */
+:root{color-scheme:light;--ink:#14141c;--mute:#7b7a8c;--pink:#ff4f9a;--yel:#ffd23d;--blue:#4aa8f0;--grass:#4fb34e;
+--disp:'Outfit','Noto Sans KR',sans-serif;--sans:'Noto Sans KR',sans-serif;--mono:'DM Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#efece6;color:var(--ink);font-family:var(--sans)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.scene{position:fixed;inset:0;opacity:0;visibility:hidden;transition:opacity .8s}
+.scene.on{opacity:1;visibility:visible}
+
+/* HUD */
+.hud{position:fixed;left:0;right:0;top:0;z-index:40;display:flex;justify-content:space-between;align-items:flex-start;padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 0 max(18px,env(safe-area-inset-left,0px));pointer-events:none;mix-blend-mode:normal}
+.hud>*{pointer-events:auto}
+.logo{font-family:var(--disp);font-weight:700;font-size:24px;letter-spacing:-.01em}
+.logo small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.14em;color:var(--mute);margin-top:1px;text-transform:uppercase}
+.hud .r{display:flex;gap:8px}
+.pillb{border:1px solid #14141c55;border-radius:99px;padding:6px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:#ffffffaa;backdrop-filter:blur(6px);transition:background .2s,color .2s}
+.pillb:hover{background:var(--ink);color:#fff}
+#hint{position:fixed;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:40;text-align:center;pointer-events:none;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#3b3a4a;text-shadow:0 0 10px #fff8}
+body.sky .logo,body.sky .logo small{color:#fff;text-shadow:0 0 12px #2a6fb0aa}
+body.sky #hint{color:#fff;text-shadow:0 0 10px #1c5d9a}
+
+/* intro */
+#intro{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:#efece6;transition:opacity .9s,visibility .9s;text-align:center}
+#intro.gone{opacity:0;visibility:hidden}
+#intro h1{font-family:var(--disp);font-weight:200;font-size:clamp(70px,16vw,200px);line-height:.9;letter-spacing:-.04em}
+#intro h1 b{font-weight:700;color:var(--pink)}
+#intro p{margin:18px auto 26px;max-width:34ch;color:#55546a;font-weight:300}
+#intro .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.bigb{padding:13px 24px;border-radius:99px;border:1.5px solid var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,color .2s}
+.bigb:hover{background:var(--ink);color:#fff}.bigb.dim{border-color:#14141c44;color:#14141caa}
+
+/* ============ 1. gallery ============ */
+#gallery{background:linear-gradient(#f3f0ea 0 70%,#cdb08a 70%,#a98660)}
+#gallery::before{content:"";position:absolute;left:0;right:0;top:70%;height:6px;background:#0002}
+#gallery::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 50%,#0000001f 100%)}
+.gw{position:absolute;inset:0;transition:transform .1s linear;will-change:transform}
+.spot{position:absolute;top:-4vh;width:34vw;height:78vh;background:radial-gradient(ellipse at 50% 0,#fff9,#fff0 68%);pointer-events:none}
+.fr{position:absolute;background:#fbfaf7;padding:.8vw;box-shadow:0 1.6vw 2.6vw #0003,0 0 0 1px #0001;cursor:default}
+.fr.go{cursor:pointer}
+.art{position:relative;width:100%;height:100%;overflow:hidden;background:var(--a)}
+.art i{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:block;border-radius:6%}
+.art .g3{width:130%;height:96%;background:var(--b);filter:blur(36px);opacity:.75}
+.art .g2{width:86%;height:62%;background:var(--c);filter:blur(22px);opacity:.85}
+.art .g1{width:66%;height:44%;background:var(--d);filter:blur(7px)}
+.art{animation:breathe 7s ease-in-out infinite}
+@keyframes breathe{50%{filter:brightness(1.1) saturate(1.08)}}
+.plaque{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#6b6a77;line-height:1.5}
+.plaque b{display:block;color:#14141c;font-weight:500}
+.fr.go::after{content:"ENTER ↵";position:absolute;left:50%;bottom:-3.6vw;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--pink);animation:bl 1.4s infinite}
+@keyframes bl{50%{opacity:.25}}
+.floorglow{position:absolute;left:34vw;width:32vw;top:72%;height:20vh;background:radial-gradient(ellipse,var(--fg,#ff9acb88),transparent 70%);filter:blur(10px)}
+
+/* ============ 2. sky + meadow ============ */
+#sky{background:linear-gradient(#5db8f5 0%,#8fd0fa 45%,#d3f0ff 100%);overflow:hidden}
+#space{position:absolute;inset:0;background:linear-gradient(#0b1030,#1c2a7a 55%,#3a63c7);transition:opacity 4s ease-in}
+#sky.fall #space{opacity:0}
+#sun{position:absolute;right:12vw;top:9vh;width:14vw;aspect-ratio:1;border-radius:50%;background:radial-gradient(#fff6c8,#ffe27a 40%,#ffe27a00 70%);opacity:.0;transition:opacity 3s 2s}
+#sky.landed #sun,#sky.fall #sun{opacity:.9}
+.cl{position:absolute;left:var(--x);top:0;width:var(--w);height:calc(var(--w)*.4);border-radius:99px;background:#fff;filter:blur(2px);box-shadow:calc(var(--w)*.25) calc(var(--w)*-.12) 0 calc(var(--w)*.04) #fff,calc(var(--w)*-.22) calc(var(--w)*-.06) 0 calc(var(--w)*.02) #fff;opacity:.9}
+#sky .cl{animation:up var(--t) linear infinite var(--dl);opacity:0}
+#sky.fall .cl{opacity:.92}
+@keyframes up{from{transform:translateY(130vh)}to{transform:translateY(-40vh)}}
+#sky.landed .cl{animation:drift var(--t2) linear infinite alternate;top:var(--y);opacity:.95}
+@keyframes drift{from{transform:translateX(-6vw)}to{transform:translateX(8vw)}}
+.streak{position:absolute;width:2px;height:16vh;background:linear-gradient(#fff0,#ffffffaa);animation:str .5s linear infinite;opacity:0}
+#sky.fall:not(.landed) .streak{opacity:1}
+@keyframes str{from{transform:translateY(-30vh)}to{transform:translateY(130vh)}}
+.hill{position:absolute;left:-20vw;width:140vw;border-radius:50% 50% 0 0/38% 38% 0 0;transform:translateY(105%);transition:transform 2.2s cubic-bezier(.2,.8,.2,1)}
+#sky.rise .hill{transform:none}
+.hill.a{bottom:0;height:56vh;background:linear-gradient(#8bd582,#6cc563);transition-delay:0s}
+.hill.b{bottom:0;height:46vh;left:-40vw;background:linear-gradient(#63bd5a,#4fae4c);transition-delay:.25s}
+.hill.c{bottom:0;height:34vh;left:-10vw;background:linear-gradient(#49a844,#3a9a3f);transition-delay:.5s}
+#field{position:absolute;inset:0;pointer-events:none}
+.fl{position:absolute;transform-origin:50% 100%;transform:scale(0);transition:transform .6s cubic-bezier(.3,1.6,.5,1);color:#fff}
+.fl.y{color:#ffd23d}
+#sky.landed .fl{transform:scale(1);animation:sway var(--s,3s) ease-in-out infinite alternate var(--d,0s)}
+@keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+#astroW{position:absolute;left:50%;top:-34vh;width:min(20vw,200px);z-index:55;transform:translate(-50%,0)}
+#astro{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 10px 14px #0003)}
+#astro .arm{transform-box:fill-box}
+#sky.fall:not(.landed) .armL{transform-origin:90% 90%;animation:flapL .35s ease-in-out infinite alternate}
+#sky.fall:not(.landed) .armR{transform-origin:10% 90%;animation:flapR .35s ease-in-out infinite alternate}
+@keyframes flapL{to{transform:rotate(-14deg)}}@keyframes flapR{to{transform:rotate(14deg)}}
+#puff{position:absolute;z-index:5;width:20vw;aspect-ratio:2/1;border-radius:50%;background:radial-gradient(ellipse,#fffc,#fff0 70%);opacity:0;transform:translate(-50%,-50%) scale(.3)}
+#puff.go{animation:puff 1.2s ease-out}
+@keyframes puff{20%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
+.pt{position:absolute;z-index:5;width:10px;height:10px;border-radius:50%;pointer-events:none}
+#notes{position:absolute;z-index:7;pointer-events:none}
+#notes i{position:absolute;font-style:normal;font-size:22px;color:#fff;text-shadow:0 0 8px #ff4f9a;opacity:0;animation:note 3.2s ease-out infinite}
+@keyframes note{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}100%{opacity:0;transform:translate(24px,-80px) rotate(12deg)}}
+
+/* floating cassettes */
+.tape{position:absolute;width:clamp(116px,11.5vw,170px);aspect-ratio:1.58;border-radius:8px;background:#ffffff30;border:1.5px solid #ffffffcc;box-shadow:inset 0 0 12px #ffffff55,0 14px 26px #1a4c8a44,0 0 26px var(--c);backdrop-filter:blur(2px);cursor:pointer;z-index:8;opacity:0;transform:scale(.3);transition:opacity .6s,transform .7s cubic-bezier(.3,1.6,.5,1)}
+#sky.tapes .tape{opacity:1;transform:scale(1)}
+.tape .fl2{position:absolute;inset:0;animation:flt var(--ft,5s) ease-in-out infinite alternate var(--fd,0s)}
+@keyframes flt{from{transform:translateY(-8px) rotate(var(--r1,-4deg))}to{transform:translateY(12px) rotate(var(--r2,5deg))}}
+.tape .lab{position:absolute;left:7%;right:7%;top:9%;height:44%;border-radius:4px;background:var(--c);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:clamp(9px,.9vw,12px);font-weight:500;letter-spacing:.05em;text-transform:uppercase;text-align:center;line-height:1.1;padding:2px 4px;color:#111}
+.tape .rl{position:absolute;bottom:18%;width:21%;aspect-ratio:1;border-radius:50%;background:#101018;border:2px solid #fff}
+.tape .rl.a{left:20%}.tape .rl.b{right:20%}
+.tape .rl::after{content:"";position:absolute;inset:26%;border-radius:50%;background:repeating-conic-gradient(#fff 0 20deg,transparent 20deg 60deg);animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tape .nib{position:absolute;left:38%;right:38%;bottom:0;height:16%;background:#0003;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%)}
+.tape:hover{z-index:9;transform:scale(1.18)!important}
+.tape:hover .fl2{animation-play-state:paused}
+.tape .tag{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:10px;white-space:nowrap;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-shadow:0 0 8px #2a6fb0;opacity:0;transition:opacity .2s}
+.tape:hover .tag{opacity:1}
+.tape.gone{visibility:hidden}
+
+/* card */
+#cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
+#cardlayer.on{pointer-events:auto}
+#veil{position:fixed;inset:0;z-index:49;background:#0a1c3acc;opacity:0;visibility:hidden;transition:opacity .4s}
+#veil.on{opacity:1;visibility:visible}
+.card{position:relative;width:min(1000px,94vw);height:min(640px,86vh);background:#fff;border-radius:22px;overflow:hidden;display:grid;grid-template-columns:minmax(260px,38%) 1fr;box-shadow:0 40px 100px #0006;visibility:hidden}
+.card.on{visibility:visible}
+.cl2{background:var(--c);position:relative;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+.cl2::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 30% 20%,#ffffff66,transparent 55%)}
+.phw{position:relative;height:100%;max-height:520px;aspect-ratio:9/18.4;border-radius:30px;overflow:hidden;background:#000;box-shadow:0 0 0 7px #111,0 24px 50px #0005}
+.phw iframe,.phw img{position:absolute;left:0;top:0;width:390px;height:800px;border:0;transform-origin:0 0;background:#fff;object-fit:cover;object-position:top}
+.cr{padding:clamp(18px,3vw,34px);overflow:auto;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cr .c{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.cr h2{font-family:var(--disp);font-weight:700;font-size:clamp(34px,5vw,60px);line-height:1;letter-spacing:-.02em}
+.cr .o{font-size:17px;font-weight:300}
+.cr dl{display:grid;grid-template-columns:96px 1fr;border-top:1px solid #0001}
+.cr dt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);padding:12px 0;border-bottom:1px solid #0001}
+.cr dd{margin:0;padding:10px 0;border-bottom:1px solid #0001;font-size:14px}
+.cr dd ul{padding-left:18px}
+.cr .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.cr .btns a,.cr .btns button{border:1px solid var(--ink);border-radius:99px;padding:8px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink)}
+.cr .btns a:hover,.cr .btns button:hover{background:var(--ink);color:#fff}
+.xb{position:absolute;right:14px;top:14px;z-index:3;width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #0002;font-size:16px}
+.xb:hover{background:var(--ink);color:#fff}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:55}
+
+@media(max-width:800px){
+  .fr{padding:1.6vw}.floorglow{display:none}
+  .card{grid-template-columns:1fr;grid-template-rows:42% 1fr;height:90vh}
+  .cl2{padding:12px}.phw{max-height:100%;border-radius:22px;box-shadow:0 0 0 5px #111}
+  .tape{width:104px}
+  #astroW{width:34vw}
+  .hud .logo small{display:none}.pillb{font-size:10px;padding:5px 10px}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+
+<div class="hud" id="hud" hidden>
+  <div class="logo">유영©<small>UX · Interaction Designer</small></div>
+  <div class="r"><button class="pillb" id="skip">Skip →</button><button class="pillb" id="snd" aria-pressed="false">♪ Sound Off</button></div>
+</div>
+<div id="hint"></div>
+<div id="flash"></div>
+
+<div id="intro"><div>
+  <h1>유영<b>.</b></h1>
+  <p>갤러리에서 시작해요. 소리를 켜면 로파이 재즈가 함께해요.</p>
+  <div class="row"><button class="bigb" id="goSound">♪ 소리 켜고 입장</button><button class="bigb dim" id="goQuiet">소리 없이</button></div>
+</div></div>
+
+<!-- 1. gallery -->
+<section class="scene" id="gallery" aria-label="갤러리">
+  <div class="gw" id="gw">
+    <div class="spot" style="left:6vw"></div><div class="spot" style="left:33vw"></div><div class="spot" style="left:60vw"></div>
+    <div class="floorglow" id="fg"></div>
+    <div class="fr" style="left:7vw;top:20vh;width:16vw;height:25vw"><div class="art" style="--a:#f0b64a;--b:#ff7a3d;--c:#ff9a52;--d:#ffd78a"><i class="g3"></i><i class="g2"></i><i class="g1"></i></div></div>
+    <div class="plaque" style="left:7vw;top:calc(20vh + 26.4vw)"><b>Untitled (Dusk)</b>light, 2026</div>
+    <div class="fr go" id="main" style="left:32vw;top:17vh;width:36vw;height:24vw" role="button" tabindex="0" aria-label="작품 안으로 들어가기"><div class="art" style="--a:#4fb0f4;--b:#8d8ae8;--c:#cf7fe0;--d:#ff72aa"><i class="g3"></i><i class="g2"></i><i class="g1"></i></div></div>
+    <div class="plaque" style="left:32vw;top:calc(17vh + 25.4vw + 3.4vw)"><b>유영 — Selected Works</b>UX · Interaction · 2026</div>
+    <div class="fr" style="left:77vw;top:24vh;width:16vw;height:16vw"><div class="art" style="--a:#7de8c6;--b:#4ac7e8;--c:#66d9d0;--d:#d8fff0"><i class="g3"></i><i class="g2"></i><i class="g1"></i></div></div>
+    <div class="plaque" style="left:77vw;top:calc(24vh + 17.4vw)"><b>Untitled (Aqua)</b>light, 2026</div>
+  </div>
+</section>
+
+<!-- 2. sky + meadow -->
+<section class="scene" id="sky" aria-label="초원">
+  <div id="space"></div><div id="sun"></div>
+  <div id="clouds"></div><div id="streaks"></div>
+  <div class="hill a"></div><div class="hill b"></div><div class="hill c"></div>
+  <div id="field"></div>
+  <div id="puff"></div>
+  <div id="astroW">
+    <svg id="astro" viewBox="0 0 200 270" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-label="헤드폰을 낀 우주비행사">
+      <rect x="58" y="92" width="84" height="92" rx="16" fill="#c9d1e4" stroke="#1b1b2e" stroke-width="5"/>
+      <path d="M84 176 L64 238" stroke="#1b1b2e" stroke-width="31"/><path d="M84 176 L64 238" stroke="#fff" stroke-width="22"/>
+      <path d="M118 176 L140 236" stroke="#1b1b2e" stroke-width="31"/><path d="M118 176 L140 236" stroke="#fff" stroke-width="22"/>
+      <ellipse cx="58" cy="246" rx="19" ry="11" fill="#ff8a3d" stroke="#1b1b2e" stroke-width="5"/><ellipse cx="146" cy="244" rx="19" ry="11" fill="#ff8a3d" stroke="#1b1b2e" stroke-width="5"/>
+      <rect x="66" y="96" width="68" height="86" rx="24" fill="#fff" stroke="#1b1b2e" stroke-width="5"/>
+      <rect x="84" y="118" width="32" height="22" rx="5" fill="#ff8a3d" stroke="#1b1b2e" stroke-width="4"/><circle cx="92" cy="129" r="3" fill="#fff"/><circle cx="104" cy="129" r="3" fill="#ffd23d"/>
+      <g class="arm armL"><path d="M72 110 L28 66" stroke="#1b1b2e" stroke-width="29"/><path d="M72 110 L28 66" stroke="#fff" stroke-width="20"/><circle cx="24" cy="62" r="14" fill="#ffd23d" stroke="#1b1b2e" stroke-width="5"/></g>
+      <g class="arm armR"><path d="M128 110 L172 64" stroke="#1b1b2e" stroke-width="29"/><path d="M128 110 L172 64" stroke="#fff" stroke-width="20"/><circle cx="176" cy="60" r="14" fill="#ffd23d" stroke="#1b1b2e" stroke-width="5"/></g>
+      <circle cx="100" cy="64" r="44" fill="#fff" stroke="#1b1b2e" stroke-width="5"/>
+      <ellipse cx="104" cy="66" rx="30" ry="25" fill="#1b2a5c" stroke="#1b1b2e" stroke-width="4"/>
+      <ellipse cx="94" cy="56" rx="10" ry="6" fill="#8fb7ff" opacity=".85" transform="rotate(-24 94 56)"/>
+      <path d="M56 62 Q100 2 144 62" stroke="#1b1b2e" stroke-width="13"/><path d="M56 62 Q100 2 144 62" stroke="#ff4f9a" stroke-width="7"/>
+      <rect x="42" y="48" width="20" height="34" rx="9" fill="#ff4f9a" stroke="#1b1b2e" stroke-width="5"/><rect x="138" y="48" width="20" height="34" rx="9" fill="#ff4f9a" stroke="#1b1b2e" stroke-width="5"/>
+    </svg>
+  </div>
+  <div id="notes"></div>
+  <div id="tapes"></div>
+</section>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="flw" viewBox="0 0 40 60"><path d="M20 30 Q18 46 21 60" stroke="#2f8f3c" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <g fill="currentColor" stroke="#0000001a" stroke-width=".8"><circle cx="20" cy="12" r="7"/><circle cx="29" cy="19" r="7"/><circle cx="26" cy="29" r="7"/><circle cx="14" cy="29" r="7"/><circle cx="11" cy="19" r="7"/></g>
+    <circle cx="20" cy="21" r="6" fill="#ff9a1f"/></symbol></defs></svg>
+
+<div id="veil"></div>
+<div id="cardlayer"><article class="card" id="card" aria-modal="true" role="dialog"></article></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const COVERS={'24dday':'assets/covers/24dday.png','todottodot':'assets/covers/todottodot.png','memory':'assets/covers/memory.png','jeju':'assets/covers/jeju.png'};
+/* where each project's interactive prototype lives (repo build). The standalone build swaps these for inline copies. */
+const PROTO={'24dday':'projects/24dday/index.html','todottodot':'projects/todottodot/index.html','memory':'projects/memory/eungdap-1982.html','jeju':'projects/jeju/index.html'};
+const REPO={'24dday':'24dday','todottodot':'todottodot','memory':'memory','jeju':'usyd_jeju'};
+const P=[
+ {k:'24dday',c:'#7a4dff',lab:'24dday',cat:'Mobile app · Moving',t:'24dday',one:'잔금일 하나로 이사 일정을 거꾸로 짜주는 앱',
+  rows:[['Why','이사는 계약·대출·서류·청소·전입신고가 얽힌 큰일인데, 모든 일이 "잔금일" 하나를 기준으로 움직여요. 그래서 잔금일을 중심에 두고 할 일을 역산해 챙겨주는 앱으로 기획했어요.'],
+   ['Who','이사가 처음이거나 함께 사는 사람과 과정을 공유하고 싶은 20~50대. 글보다 시각적 표현, 용어 한 줄 설명, 한 화면에 한 행동.'],
+   ['Design','<ul><li>매도와 매수를 하나의 "이사 프로젝트"로 묶음</li><li>날짜 하나를 바꾸면 나머지가 같이 움직이고, 순서가 꼬이면 경고</li><li>가족 공유, 담당자 지정, 서류 체크리스트</li><li>하단 5탭: 홈 · 일정 · 자금 · 서비스 · 커뮤니티</li></ul>'],
+   ['Process','문제 정의 → 해외 레퍼런스(My Move, PEXA Key, Rello, Muving) → 거래 유형별 타임라인 → IA → 스토리보드 → 컬러 3안 탐색 → 프로토타입'],
+   ['Result','화면 45개 규모의 모바일 프로토타입 완성. 사용자 테스트 지표는 아직 없음.']]},
+ {k:'todottodot',c:'#ff7fc3',lab:'토닥토닥',cat:'Mobile app · Self-care',t:'토닥토닥',one:'작은 미션으로 자존감을 키우는 픽셀 캐릭터 앱',
+  rows:[['Why','"캐릭터가 방을 청소할 때, 나도 진짜 내 방을 청소한다." 화면 속 캐릭터와 같은 행동을 함께하며 작은 성공을 쌓게 해요.'],
+   ['Loop','마음 체크 → 기분에 맞는 미션 추천 → 캐릭터와 함께 실제 행동 → 레벨업 시 방이 밝아짐 (Lv1 어두운 방 → Lv8 공원)'],
+   ['Principles','<ul><li>벌점 없음. 멈춰도 "여기까지만 해도 괜찮아요"</li><li>성별 선택 없는 포용적 캐릭터</li><li>위기 상담 안내 상시 노출</li><li>한국어/영어 전환</li></ul>'],
+   ['Result','미션 10종과 5단계 성장 장면이 작동하는 프로토타입.']]},
+ {k:'memory',c:'#ffd23d',lab:'응답하라 1982',cat:'Mobile app · Social',t:'응답하라 1982',one:'친구들과 사진첩·교환일기·음악을 나누는 레트로 앱',
+  rows:[['Why','실물 사진첩과 교환일기의 온기를 되살려, 친한 친구들끼리만 쓰는 작은 추억 공간을 만들어요.'],
+   ['Parts','미니홈피 · 방명록 · 사진(스캔 연출) · 음악 · 다이어리(교환일기) · 삐삐번호'],
+   ['Notes','음악은 파일 재생이 아니라 스트리밍 링크 공유(저작권). 이름과 고유 용어는 출시 전 새로 정해야 해요.'],
+   ['Result','두 가지 콘셉트(오래된 서랍 / 응답하라 1982)를 만들고 하나를 발전시킴.']]},
+ {k:'jeju',c:'#54ff9a',lab:'Visit Jeju',cat:'Website · Responsive',t:'Visit Jeju',one:'제주 슬로우 트래블 관광 웹사이트',
+  rows:[['Overview','모바일 우선으로 만든 5페이지 관광 웹사이트. HTML/CSS만으로 구현(JavaScript 없음).'],
+   ['Build','Flexbox와 미디어쿼리로 반응형 구성, CSS 전용 햄버거 메뉴.'],
+   ['Why it matters','코드로 구조를 직접 짜본 첫 단계. 지금 프로토타입을 직접 만드는 바탕이 된 작업.']]},
+ {k:'about',c:'#3de0ff',lab:'About · Contact',cat:'About me',t:'유영',one:'UX 인터랙션 디자이너',about:true,
+  rows:[['About','사람이 어디서 막히는지 먼저 보고, 그 자리에 가장 작은 움직임을 둡니다.'],
+   ['Before UX','태권도 겨루기 선수, 힙합 래퍼, 호주의 요리사를 거쳤어요. 거리와 타이밍, 리듬, 바쁜 주방의 시스템이 지금 인터랙션을 설계하는 방식이 됐어요.'],
+   ['Skills','Research & Planning · Interaction & Prototyping · Visual/UI · Inclusive design'],
+   ['Contact','<span style="user-select:all">hello@your-email.com</span> (확정되면 교체)']]}];
+
+/* ================= audio: lo-fi jazz ================= */
+let ac,out,an,noiseBuf,tm=null,on=false,step=0,cur=null;
+const N={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const hz=(n)=>{const m=n.match(/^([A-G])([#b]?)(\d)$/);let s=N[m[1]]+(m[2]==='#'?1:m[2]==='b'?-1:0);return 440*Math.pow(2,((s+12*(+m[3]+1))-69)/12)};
+const TRACKS={
+ '24dday':{bpm:78,sw:.30,ch:[['D3','F3','A3','C4','E4'],['G2','F3','B3','E4'],['C3','E3','G3','B3','D4'],['A2','E3','G3','C4']],root:['D2','G2','C2','A1'],sc:['D5','F5','A5','C6','E5','G5']},
+ 'todottodot':{bpm:68,sw:.34,ch:[['F3','A3','C4','E4','G4'],['E3','G3','B3','D4'],['D3','F3','A3','C4','E4'],['C3','E3','G3','B3']],root:['F2','E2','D2','C2'],sc:['A4','C5','E5','G5','D5']},
+ 'memory':{bpm:84,sw:.28,ch:[['A2','E3','G3','B3','C4'],['D3','F#3','A3','C4','E4'],['G2','D3','F#3','B3','A3'],['C3','E3','G3','B3']],root:['A1','D2','G1','C2'],sc:['E5','G5','A5','B5','D5']},
+ 'jeju':{bpm:64,sw:.36,ch:[['C3','E3','G3','B3','D4'],['A2','E3','G3','C#4'],['D3','F3','A3','C4','E4'],['G2','F3','B3','E4']],root:['C2','A1','D2','G1'],sc:['E5','G5','B5','D5','A5']},
+ 'about':{bpm:72,sw:.32,ch:[['Eb3','G3','Bb3','D4','F4'],['D3','F3','A3','C4'],['G2','Bb2','D3','F3','A3'],['C3','E3','G3','Bb3','D4']],root:['Eb2','D2','G1','C2'],sc:['G4','Bb4','D5','F5','C5']},
+ 'ambient':{bpm:60,sw:.3,ch:[['D3','F3','A3','C4','E4'],['E3','G3','B3','D4']],root:['D2','E2'],sc:['A4','C5','E5']}
+};
+function ensureAudio(){
+  if(ac)return;ac=new (window.AudioContext||window.webkitAudioContext)();
+  const m=ac.createGain();m.gain.value=.7;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=3800;lp.Q.value=.5;
+  an=ac.createAnalyser();an.fftSize=256;m.connect(lp);lp.connect(an);an.connect(ac.destination);out=m;
+  // delay (tape echo)
+  const d=ac.createDelay(1);d.delayTime.value=.34;const fb=ac.createGain();fb.gain.value=.32;const dl=ac.createBiquadFilter();dl.type='lowpass';dl.frequency.value=1800;
+  const send=ac.createGain();send.gain.value=.22;send.connect(d);d.connect(dl);dl.connect(fb);fb.connect(d);dl.connect(m);out.send=send;
+  const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;noiseBuf=b;
+  // tape hiss
+  const hs=ac.createBufferSource();hs.buffer=noiseBuf;hs.loop=true;const hf=ac.createBiquadFilter();hf.type='bandpass';hf.frequency.value=5200;hf.Q.value=.4;const hg=ac.createGain();hg.gain.value=.012;hs.connect(hf);hf.connect(hg);hg.connect(m);hs.start();
+}
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function tone(f,t,d,type,g,sendAmt=0){const o=ac.createOscillator(),v=ac.createGain();o.type=type;o.frequency.setValueAtTime(f,t);v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+.012);v.gain.exponentialRampToValueAtTime(.0006,t+d);o.connect(v);v.connect(out);if(sendAmt){const s=ac.createGain();s.gain.value=sendAmt;v.connect(s);s.connect(out.send)}o.start(t);o.stop(t+d+.05)}
+function keys(f,t,d,g){[1,2.003].forEach((m,i)=>{const o=ac.createOscillator(),v=ac.createGain(),lp=ac.createBiquadFilter();o.type=i?'triangle':'sine';o.frequency.value=f*m*(1+rnd(-.0015,.0015));lp.type='lowpass';lp.frequency.value=1500;v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g/(i+1.7),t+.03);v.gain.exponentialRampToValueAtTime(.0005,t+d);o.connect(lp);lp.connect(v);v.connect(out);const s=ac.createGain();s.gain.value=.3;v.connect(s);s.connect(out.send);o.start(t);o.stop(t+d+.05)})}
+function nz(t,d,g,fq,type='highpass'){const s=ac.createBufferSource(),v=ac.createGain(),f=ac.createBiquadFilter();s.buffer=noiseBuf;f.type=type;f.frequency.value=fq;v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0005,t+d);s.connect(f);f.connect(v);v.connect(out);s.start(t,Math.random()*1.5,d+.02)}
+function tick(){
+  const T=cur,SD=60/T.bpm/4,bar=(step>>4)%T.ch.length,s=step%16,j=rnd(-.012,.012);
+  const t=ac.currentTime+.06+(s%2?SD*T.sw:0)+j;
+  if([0,7,10].includes(s))tone(105,t,.26,'sine',.6);if(s===0&&((step>>4)%2))tone(70,t,.3,'sine',.3);
+  if(s===4||s===12){nz(t,.2,.22,1500,'bandpass');tone(185,t,.08,'triangle',.1)}
+  if(s%2===0)nz(t,.03,s%4===0?.09:.05,7500);
+  if(s===0||s===7||s===11)T.ch[bar].forEach((n,i)=>keys(hz(n),t+i*.016,s===0?1.8:.5,.055));
+  if(s===0||s===6||s===10)tone(hz(T.root[bar]),t,.55,'triangle',.3);
+  if(s%2===0&&Math.random()<.34){const n=T.sc[Math.random()*T.sc.length|0];tone(hz(n),t,.5,'sine',.05,.7)}
+  if(Math.random()<.22)nz(t+rnd(0,SD),.012,.045,2500);
+  step++;
+}
+function playTrack(key){if(!ac||!on)return;stopTrack();cur=TRACKS[key]||TRACKS.ambient;step=0;tm=setInterval(tick,60000/cur.bpm/4*1000)}
+function stopTrack(){clearInterval(tm);tm=null}
+function sfx(kind){if(!ac||!on)return;const t=ac.currentTime+.01;
+  if(kind==='insert'){nz(t,.12,.4,600,'lowpass');tone(95,t,.18,'sine',.7);tone(220,t+.12,.05,'square',.08)}
+  if(kind==='play'){nz(t,.05,.35,3000,'bandpass');tone(150,t,.05,'square',.1)}
+  if(kind==='eject'){nz(t,.14,.3,900,'bandpass');tone(130,t,.14,'triangle',.4)}
+  if(kind==='step'){nz(t,.07,.1,300,'lowpass')}
+  if(kind==='door'){nz(t,.5,.3,500,'lowpass');tone(80,t,.6,'sine',.4)}}
+function setSound(v){on=v;$('#snd').textContent=v?'♪ Sound On':'♪ Sound Off';$('#snd').setAttribute('aria-pressed',v);
+  if(v){ensureAudio();ac.resume();startAmbient()}else{stopTrack();stopAmbient()}}
+let amb=null;
+function startAmbient(){if(!ac||amb)return;amb=[];const hum=ac.createOscillator(),hg=ac.createGain();hum.type='sawtooth';hum.frequency.value=100;hg.gain.value=.0022;const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=260;hum.connect(f);f.connect(hg);hg.connect(out);hum.start();
+  const c=ac.createBufferSource();c.buffer=noiseBuf;c.loop=true;const cf=ac.createBiquadFilter();cf.type='lowpass';cf.frequency.value=420;const cg=ac.createGain();cg.gain.value=.05;c.connect(cf);cf.connect(cg);cg.connect(out);c.start();amb=[hum,c,hg,cg]}
+function stopAmbient(){if(!amb)return;try{amb[0].stop();amb[1].stop()}catch(e){}amb=null}
+function level(){if(!an||!on)return 0;const a=new Uint8Array(an.frequencyBinCount);an.getByteFrequencyData(a);let s=0;for(let i=0;i<24;i++)s+=a[i];return Math.min(1,s/24/200)}
+
+
+function sfxLand(){if(!ac||!on)return;const t=ac.currentTime+.01;nz(t,.25,.5,300,'lowpass');tone(70,t,.3,'sine',.7)}
+function sfxWhoosh(){if(!ac||!on)return;const t=ac.currentTime+.01;nz(t,1.6,.14,900,'bandpass')}
+function sfxPop(){if(!ac||!on)return;tone(520,ac.currentTime+.01,.1,'sine',.12)}
+
+/* ---------------- state ---------------- */
+let scene='gallery',started=false,gp=0,gt=0,busy=false,cardOpen=-1;
+function hint(t){$('#hint').textContent=t}
+function show(id){$$('.scene').forEach(s=>s.classList.toggle('on',s.id===id));scene=id;document.body.classList.toggle('sky',id==='sky')}
+
+/* ---------------- gallery: walk toward the frames ---------------- */
+addEventListener('wheel',e=>{if(!started||scene!=='gallery'||busy)return;gt=Math.max(0,Math.min(1,gt+e.deltaY*.0006))},{passive:true});
+let ty0=null;addEventListener('touchstart',e=>{ty0=e.touches[0].clientY},{passive:true});
+addEventListener('touchmove',e=>{if(!started||scene!=='gallery'||busy||ty0==null)return;const y=e.touches[0].clientY;gt=Math.max(0,Math.min(1,gt+(ty0-y)*.002));ty0=y},{passive:true});
+addEventListener('keydown',e=>{if(scene==='gallery'&&started&&!busy&&['ArrowUp','w',' '].includes(e.key)){e.preventDefault();gt=Math.min(1,gt+.08)}if(e.key==='Enter'&&scene==='gallery'&&started)enterFrame();if(e.key==='Escape'&&cardOpen>=0)closeCard()});
+let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+(function loop(){gp+=(gt-gp)*.08;
+  if(scene==='gallery'){const sc=1+gp*.55;$('#gw').style.transformOrigin='50% 42%';$('#gw').style.transform=`translate(${-mx*14}px,${-my*8}px) scale(${sc})`}
+  requestAnimationFrame(loop)})();
+$('#main').onclick=()=>enterFrame();
+function enterFrame(){if(busy||scene!=='gallery')return;busy=true;sfxWhoosh();
+  const art=$('#main .art'),r=art.getBoundingClientRect();
+  const f=document.createElement('div');f.style.cssText=`position:fixed;z-index:56;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background:linear-gradient(135deg,#4fb0f4,#cf7fe0 55%,#ff72aa);box-shadow:inset 0 0 80px #ffffff88;transition:all 1.1s cubic-bezier(.7,0,.2,1)`;
+  document.body.appendChild(f);f.getBoundingClientRect();f.style.cssText+=';left:0;top:0;width:100vw;height:100vh;filter:brightness(1.15)';
+  hint('');setTimeout(()=>{show('sky');startFall();f.style.transition='opacity 1.2s';f.style.opacity=0;setTimeout(()=>f.remove(),1300)},1150)}
+
+/* ---------------- sky: build clouds, streaks, flowers ---------------- */
+(()=>{const cl=$('#clouds');for(let i=0;i<7;i++){const d=document.createElement('div');d.className='cl';d.style.cssText=`--x:${rnd(-5,88)}vw;--w:${rnd(14,26)}vw;--t:${rnd(1.6,3.2).toFixed(1)}s;--t2:${rnd(14,28).toFixed(0)}s;--y:${rnd(4,40)}vh;--dl:-${rnd(0,3).toFixed(1)}s`;cl.appendChild(d)}
+  const st=$('#streaks');for(let i=0;i<14;i++){const s=document.createElement('div');s.className='streak';s.style.cssText=`left:${rnd(2,98)}vw;animation-delay:-${rnd(0,.5).toFixed(2)}s;animation-duration:${rnd(.35,.7).toFixed(2)}s;height:${rnd(10,22)}vh`;st.appendChild(s)}
+  const fd=$('#field'),N=innerWidth<800?150:280;
+  for(let i=0;i<N;i++){const dep=Math.pow(Math.random(),.8);const y=60+dep*36;const w=10+dep*40;
+    const e=document.createElementNS('http://www.w3.org/2000/svg','svg');e.setAttribute('class','fl'+(Math.random()<.45?' y':''));
+    e.style.cssText=`left:${rnd(-2,100)}vw;top:${y}vh;width:${w}px;height:${w*1.5}px;transition-delay:${(.2+Math.random()*1.4).toFixed(2)}s;--s:${rnd(2.4,4.2).toFixed(1)}s;--d:-${rnd(0,3).toFixed(1)}s;z-index:${Math.round(dep*100)}`;
+    e.innerHTML='<use href="#flw"/>';fd.appendChild(e)}})();
+
+/* ---------------- the fall ---------------- */
+function startFall(){const sk=$('#sky'),aw=$('#astroW');sk.classList.add('fall');hint('');
+  setTimeout(()=>{sk.classList.add('rise')},RM?10:2300);
+  const dur=RM?200:4600;
+  const a=aw.animate([
+    {left:'50%',top:'-34vh',transform:'translate(-50%,0) rotate(-12deg) scale(1)'},
+    {left:'47%',top:'22vh',transform:'translate(-50%,0) rotate(15deg) scale(1)',offset:.42},
+    {left:'39%',top:'56vh',transform:'translate(-50%,0) rotate(-8deg) scale(1)',offset:.8},
+    {left:'31%',top:'74vh',transform:'translate(-50%,0) rotate(-82deg) scale(.8)'}],{duration:dur,easing:'cubic-bezier(.45,0,.75,.9)',fill:'forwards'});
+  a.onfinish=land;a.pause();a.play()}
+function land(){const sk=$('#sky'),aw=$('#astroW');sk.classList.add('landed');sfxLand();
+  const r=aw.getBoundingClientRect(),pf=$('#puff');pf.style.left=(r.left+r.width/2)+'px';pf.style.top=(r.top+r.height*.7)+'px';pf.classList.add('go');
+  for(let i=0;i<26;i++){const p=document.createElement('div');p.className='pt';p.style.cssText=`left:${r.left+r.width/2}px;top:${r.top+r.height*.8}px;background:${Math.random()<.5?'#fff':'#ffd23d'}`;$('#sky').appendChild(p);
+    p.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${rnd(-160,160)}px,${rnd(-190,-30)}px) scale(.2)`,opacity:0}],{duration:rnd(900,1600),easing:'cubic-bezier(.2,.8,.3,1)'}).onfinish=()=>p.remove()}
+  // music notes over the headphones
+  const n=$('#notes');n.style.left=(r.left+r.width*.55)+'px';n.style.top=(r.top-r.height*.05)+'px';n.innerHTML='<i style="left:0">♪</i><i style="left:16px;animation-delay:1.1s">♫</i><i style="left:-14px;animation-delay:2.2s">♪</i>';
+  playTrack('todottodot');
+  setTimeout(()=>{sk.classList.add('tapes');sfxPop();hint('카세트를 눌러보세요')},900);
+  busy=false}
+
+/* ---------------- floating cassettes ---------------- */
+const POSD=[{x:'20%',y:'16%',r:[-5,4],t:5.2},{x:'43%',y:'8%',r:[3,-5],t:6.1},{x:'66%',y:'22%',r:[-4,5],t:5.6},{x:'35%',y:'34%',r:[5,-3],t:6.6},{x:'80%',y:'8%',r:[-3,4],t:5.9}];
+const POSM=[{x:'6%',y:'15%',r:[-5,4],t:5.2},{x:'50%',y:'9%',r:[3,-5],t:6.1},{x:'8%',y:'31%',r:[-4,5],t:5.6},{x:'48%',y:'27%',r:[5,-3],t:6.6},{x:'28%',y:'44%',r:[-3,4],t:5.9}];
+const POS=innerWidth<800?POSM:POSD;
+(()=>{const box=$('#tapes');P.forEach((p,i)=>{const q=POS[i];const b=document.createElement('button');b.className='tape';b.style.cssText=`left:${q.x};top:${q.y};--c:${p.c};transition-delay:${(i*.18).toFixed(2)}s`;b.dataset.i=i;
+  b.setAttribute('aria-label',p.t+' 카세트');
+  b.innerHTML=`<span class="fl2" style="--ft:${q.t}s;--fd:-${(i*1.3).toFixed(1)}s;--r1:${q.r[0]}deg;--r2:${q.r[1]}deg"><span class="lab">${p.lab}</span><span class="rl a"></span><span class="rl b"></span><span class="nib"></span></span><span class="tag">${p.cat}</span>`;
+  b.onclick=()=>openCard(i,b);box.appendChild(b)})})();
+
+/* ---------------- card ---------------- */
+function fit(){const w=$('#card .phw');if(!w)return;const s=w.clientWidth/390;$$('#card .phw iframe,#card .phw img').forEach(e=>e.style.transform=`scale(${s})`);const fr=$('#card iframe');if(fr)fr.style.height=(w.clientHeight/s)+'px'}
+function fill(i){const p=P[i],has=!!PROTO[p.k],c=$('#card');cardOpen=i;
+  const left=p.about?`<div class="cl2" style="--c:${p.c}"><span style="font-family:var(--disp);font-weight:700;font-size:clamp(70px,12vw,130px);color:#fff;letter-spacing:-.04em">유영</span></div>`
+    :`<div class="cl2" style="--c:${p.c}"><div class="phw">${has?`<iframe title="${p.t} 프로토타입" loading="lazy"></iframe>`:`<img src="${COVERS[p.k]}" alt="${p.t} 화면">`}</div></div>`;
+  c.innerHTML=`<button class="xb" id="xb" aria-label="닫기">✕</button>${left}<div class="cr"><div class="c">${p.cat}${!p.about&&!has?' · 화면 캡처':''}</div><h2>${p.t}</h2><div class="o">${p.one}</div><dl>${p.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>
+    <div class="btns">${p.about?'':`<a href="https://github.com/theblueyoung/${REPO[p.k]}" target="_blank" rel="noopener">GitHub ↗</a>`}<button id="pv">← 이전</button><button id="nx">다음 →</button></div></div>`;
+  $('#xb').onclick=closeCard;$('#pv').onclick=()=>swap(-1);$('#nx').onclick=()=>swap(1);
+  if(!p.about&&has){const fr=$('#card iframe'),src=PROTO[p.k];if(src.startsWith('srcdoc:'))fr.srcdoc=window.SRCDOC[p.k];else fr.src=src}
+  setTimeout(fit,30);playTrack(p.k)}
+function openCard(i,el){if(cardOpen>=0)return;sfxPop();fill(i);const c=$('#card'),L=$('#cardlayer');$('#veil').classList.add('on');L.classList.add('on');c.classList.add('on');
+  const r=el.getBoundingClientRect(),f=c.getBoundingClientRect();
+  el.classList.add('gone');$('#veil').onclick=closeCard;
+  if(!RM)c.animate([{transform:`translate(${r.left+r.width/2-(f.left+f.width/2)}px,${r.top+r.height/2-(f.top+f.height/2)}px) scale(${r.width/f.width},${r.height/f.height})`,borderRadius:'10px',opacity:.2},{transform:'none',borderRadius:'22px',opacity:1}],{duration:650,easing:'cubic-bezier(.3,1,.4,1)'});
+  hint('')}
+function closeCard(){if(cardOpen<0)return;const c=$('#card');c.classList.remove('on');$('#cardlayer').classList.remove('on');$('#veil').classList.remove('on');$$('.tape.gone').forEach(t=>t.classList.remove('gone'));cardOpen=-1;c.innerHTML='';playTrack('todottodot');hint('카세트를 눌러보세요')}
+function swap(d){const n=(cardOpen+d+P.length)%P.length;const c=$('#card');c.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:`translateX(${-d*40}px)`}],{duration:160}).onfinish=()=>{fill(n);c.animate([{opacity:0,transform:`translateX(${d*40}px)`},{opacity:1,transform:'none'}],{duration:220})}}
+new ResizeObserver(fit).observe($('#card'));
+
+/* ---------------- start / skip ---------------- */
+function begin(withSound){$('#intro').classList.add('gone');started=true;$('#hud').hidden=false;show('gallery');hint('스크롤해서 다가가기 · 가운데 작품을 눌러 들어가기');if(withSound)setSound(true)}
+$('#goSound').onclick=()=>begin(true);$('#goQuiet').onclick=()=>begin(false);
+function setSound(v){on=v;$('#snd').textContent=v?'♪ Sound On':'♪ Sound Off';$('#snd').setAttribute('aria-pressed',v);if(v){ensureAudio();ac.resume();playTrack(scene==='sky'?'todottodot':'ambient')}else stopTrack()}
+$('#snd').onclick=()=>setSound(!on);
+$('#skip').onclick=()=>{if(scene!=='gallery'||busy)return;busy=true;const f=$('#flash');f.style.transition='opacity .3s';f.style.opacity=1;setTimeout(()=>{show('sky');const sk=$('#sky'),aw=$('#astroW');$('#space').style.transition='none';$('#space').style.opacity=0;sk.classList.add('fall','rise','landed','tapes');
+  aw.style.cssText='left:31%;top:74vh;transform:translate(-50%,0) rotate(-82deg) scale(.8)';
+  const r=aw.getBoundingClientRect();$('#notes').style.left=(r.left+r.width*.55)+'px';$('#notes').style.top=(r.top-r.height*.05)+'px';$('#notes').innerHTML='<i style="left:0">♪</i><i style="left:16px;animation-delay:1.1s">♫</i>';
+  playTrack('todottodot');hint('카세트를 눌러보세요');f.style.opacity=0;busy=false},350)};
+</script>
+</body>
+</html>
