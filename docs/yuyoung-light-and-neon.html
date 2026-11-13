@@ -46,14 +46,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #main.on{visibility:visible;opacity:1}
 #main.adjust #stagewrap{animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rise{from{opacity:0;transform:scale(.92)}}
-#stagewrap{position:absolute;inset:0;perspective:1500px;perspective-origin:50% 48%}
-#ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+#stagewrap{position:absolute;inset:0}
+#ring{position:absolute;left:50%;top:50%;width:0;height:0;z-index:1;isolation:isolate}
 .rc{position:absolute;left:0;top:0;background:#fff;box-shadow:0 10px 22px -10px #00000050,0 0 0 1px #0000000d;overflow:hidden;padding:0;border:0;cursor:pointer;color:#111;will-change:transform,opacity;backface-visibility:visible}
 .rc img{width:100%;height:100%;object-fit:cover;object-position:50% 6%;display:block;pointer-events:none}
 .rc.about{background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:500}
 .rc.empty{cursor:default;background:repeating-linear-gradient(135deg,#0000 0 7px,#0000000a 7px 8px),#f6f6f6;display:flex;align-items:center;justify-content:center;color:#00000040;font-family:var(--disp);font-weight:200}
 .rc:focus-visible{outline:2px solid #111;outline-offset:3px}
 #ctr{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:min(46vmin,420px);transition:opacity .35s}
+#ctr{z-index:6}
+#ctr:not([data-m=flat]){left:50%;top:auto;bottom:calc(58px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:auto;white-space:nowrap;background:#111;color:#fff;padding:10px 22px 12px;border-radius:99px;display:flex;align-items:baseline;gap:12px}
+#ctr:not([data-m=flat]) small{margin:0;color:#ffffffb0}
+#ctr:not([data-m=flat]) b{font-size:22px;font-weight:300;color:#fff;letter-spacing:0}
 #ctr b{display:block;font-family:var(--disp);font-weight:200;font-size:clamp(30px,6vmin,64px);line-height:1;letter-spacing:-.02em;color:#111}
 #ctr small{display:block;margin-top:10px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#111a}
 #ctr em{display:block;margin-top:6px;font-style:normal;font-weight:300;font-size:14px;color:#111c}
@@ -209,49 +213,62 @@ function toMain(){const f=$('#flash');f.classList.add('on');
 $('#again').onclick=()=>{if(maxed)return;const f=$('#flash');f.classList.add('on');setTimeout(()=>{$('#main').classList.remove('on','adjust');$('#again').hidden=true;$('#onb').style.display='';$('#onbtxt').style.display='';$('#onbtxt').style.opacity=1;p=tp=0;slow=false;busy=false;scene='onb';setTimeout(()=>f.classList.remove('on'),100)},520)};
 let maxed=false;
 
-/* ---------- main: the turning ring ---------- */
+/* ---------- main: the turning ring (Flat / Tilt / Ring / Gallery) ---------- */
 const N=16,UNIQ=8,TAU=Math.PI*2;
 const ITEMS=[{pi:0,n:'24dday',s:'Moving · App'},{pi:1,n:'토닥토닥',s:'Self-care · App'},{pi:2,n:'응답하라 1982',s:'Social · App'},{pi:3,n:'Visit Jeju',s:'Web · School'},{pi:4,n:'About',s:'Profile · Contact'},null,null,null];
 const ring=$('#ring'),ctr=$('#ctr'),cardEls=[];
-let S=700,CW=70,CH=90,mode='flat',spin=0,vel=0,hovered=-1,lastT=0,dragX=null;
-const cur=[];
+let S=700,W=1200,H=800,CW=70,CH=90,mode='flat',spin=0,vel=0,hovered=-1,hovEl=null,lastT=0,dragX=null,opening=false;
+const cur=[],tiltv=[];
 ITEMS.concat(ITEMS).forEach((it,i)=>{const el=document.createElement(it?'button':'div');el.className='rc'+(it?(P[it.pi].about?' about':''):' empty');
+  tiltv.push({rx:0,ry:0,trx:0,try_:0,h:0});
+  const enter=()=>{hovered=i%UNIQ;hovEl=i;showCtr()},leave=()=>{if(hovEl===i){hovered=-1;hovEl=null;showCtr()}tiltv[i].trx=tiltv[i].try_=0};
+  el.addEventListener('pointerenter',enter);el.addEventListener('pointerleave',leave);
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();tiltv[i].try_=((e.clientX-r.left)/r.width-.5)*26;tiltv[i].trx=-((e.clientY-r.top)/r.height-.5)*22});
   if(it){const p=P[it.pi];el.setAttribute('aria-label',p.t);el.innerHTML=p.about?'<span class="ab">유영</span>':`<img src="${COVERS[p.k]}" alt="">`;
-    el.onclick=()=>openCard(it.pi,el);el.addEventListener('pointerenter',()=>{hovered=i%UNIQ;showCtr()});el.addEventListener('pointerleave',()=>{hovered=-1;showCtr()});el.addEventListener('focus',()=>{hovered=i%UNIQ;showCtr()});el.addEventListener('blur',()=>{hovered=-1;showCtr()})}
+    el.addEventListener('focus',enter);el.addEventListener('blur',leave);
+    el.onclick=()=>{if(opening||cardOpen>=0)return;opening=true;   // the picked card rises first, then opens
+      const a=el.animate([{translate:'0 0',scale:'1'},{translate:'0 -46px',scale:'1.22'}],{duration:330,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
+      a.onfinish=()=>{openCard(it.pi,el);setTimeout(()=>{a.cancel();opening=false},700)}}}
   else el.innerHTML='<span class="pl">+</span>';
   ring.appendChild(el);cardEls.push(el);cur.push(null)});
-function showCtr(){const it=hovered>=0?ITEMS[hovered]:null;ctr.style.opacity=it?1:0;if(it)ctr.innerHTML=`<b>${it.n}</b><small>${it.s}</small>`}
-function sizes(){const vw=innerWidth,vh=innerHeight;S=Math.min(vw,vh);const small=vw<700;CW=Math.round(S*(small?.125:.105));CH=Math.round(CW*1.3);
-  cardEls.forEach(el=>{el.style.width=CW+'px';el.style.height=CH+'px';el.style.marginLeft=-CW/2+'px';el.style.marginTop=-CH/2+'px';el.style.borderRadius='3px';const ab=el.querySelector('.ab');if(ab)ab.style.fontSize=CW*.34+'px';const pl=el.querySelector('.pl');if(pl)pl.style.fontSize=CW*.5+'px'})}
+function showCtr(){const it=hovered>=0?ITEMS[hovered]:null;ctr.style.opacity=it?1:0;if(it)ctr.innerHTML=`<b>${it.n}</b><small>${it.s}</small>`;ctr.dataset.m=mode}
+function sizes(){W=innerWidth;H=innerHeight;S=Math.min(W,H);CW=Math.round(S*.25);CH=Math.round(CW*1.3);
+  cardEls.forEach(el=>{el.style.width=CW+'px';el.style.height=CH+'px';el.style.marginLeft=-CW/2+'px';el.style.marginTop=-CH/2+'px';const ab=el.querySelector('.ab');if(ab)ab.style.fontSize=CW*.34+'px';const pl=el.querySelector('.pl');if(pl)pl.style.fontSize=CW*.5+'px'})}
 function layout(){sizes()}
 addEventListener('resize',sizes);sizes();
-function norm(a){a=((a+Math.PI)%TAU+TAU)%TAU-Math.PI;return a}
-function target(m,i,sp){const a=i/N*TAU+sp,R=S*(innerWidth<700?.38:.365);
-  if(m==='flat'){return [R*Math.sin(a),-R*Math.cos(a)*(innerWidth<700?1.45:1),0,0,0,0,1,1]}
-  if(m==='tilt'){const y0=-R*Math.cos(a),ph=62*Math.PI/180;return [R*1.12*Math.sin(a),y0*Math.cos(ph)*1.0,y0*Math.sin(ph)*1.1,0,0,0,1,1]}
-  if(m==='ring'){const R2=S*(innerWidth<700?.5:.62),z=R2*Math.cos(a)-R2;return [R2*Math.sin(a),z*.07+S*.03,z,0,norm(a),0,innerWidth<700?1.5:1.9,.22+.78*Math.pow((Math.cos(a)+1)/2,1.4)]}
-  const cols=4,c=i%cols,r=Math.floor(i/cols),gx=CW*1.5,gy=CH*1.3;return [(c-1.5)*gx,(r-1.5)*gy,0,0,0,0,1.12,1]}
-$$('#modes button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
-addEventListener('wheel',e=>{if(scene!=='main'||maxedOrCard())return;vel+=e.deltaY*.0009},{passive:true});
-function maxedOrCard(){return cardOpen>=0}
+/* returns [x, y, scale, depth(0 far..1 near), opacity] for card i */
+function target(m,i,sp){const a=i/N*TAU+sp,port=W<H;
+  if(m==='flat'){const R=S*(port?.38:.365);return [R*Math.sin(a),-R*Math.cos(a)*(port?1.45:1),(port?.125:.105)*S/CW,.5,1]}
+  if(m==='tilt'){                                   // a much larger circle: only its top arc crosses the screen
+    const cw=port?W*.34:Math.min(W*.17,H*.3),R=cw*1.36*N/TAU;return [R*Math.sin(a),-R*Math.cos(a)+R-H*.06,cw/CW,.5+.5*Math.cos(a),Math.cos(a)>-.2?1:0]}
+  if(m==='ring'){                                   // the circle laid back and turned: far = upper left, near = lower right
+    const R=S*(port?.4:.42),ph=1.13,th=-.52,x0=R*Math.sin(a),y0=-R*Math.cos(a),z=y0*Math.sin(ph),f=R*2.3,s=f/(f-z);
+    const px=x0*s,py=y0*Math.cos(ph)*s,X=px*Math.cos(th)-py*Math.sin(th),Y=px*Math.sin(th)+py*Math.cos(th);
+    return [X+S*.02,Y-S*.02,s*.074*S/CW*(port?1.2:1),(z/(R*Math.sin(ph))+1)/2,1]}
+  const R=port?W*.6:Math.min(W*.5,H*.8),f=R*1.6,z=R*Math.cos(a),s=f/(f-z);   // gallery: a horizontal carousel seen level
+  const cw=(port?W*.3:Math.min(W*.19,H*.33))/2.67;return [-R*Math.sin(a)*s*.78,-z*.03,s*cw/CW,(Math.cos(a)+1)/2,1]}
+$$('#modes button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));showCtr()});
+addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0)return;vel+=e.deltaY*.0009},{passive:true});
 $('#main').addEventListener('pointerdown',e=>{if(e.target.closest('.rc,#modes,#again'))return;dragX=e.clientX});
 addEventListener('pointermove',e=>{if(dragX==null)return;vel+=(e.clientX-dragX)*.0016;dragX=e.clientX});
 addEventListener('pointerup',()=>{dragX=null});
 addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key==='ArrowRight')vel+=.3;if(e.key==='ArrowLeft')vel-=.3});
-function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;
-  const base=mode==='gallery'?0:(hovered>=0||cardOpen>=0?0:.05);
+const SPEED=.11;                                     // radians per second, clockwise, never stops
+function mainFrame(ms){const dt=Math.min(.1,(ms-lastT)/1000||0);lastT=ms;
+  const base=cardOpen>=0?SPEED*.15:(hovered>=0?SPEED*.3:SPEED);
   spin+=(base+vel)*dt;vel*=Math.pow(.04,dt);
-  const k=1-Math.pow(.001,dt);
+  const k=1-Math.pow(.0006,dt),k2=1-Math.pow(.00002,dt);
   cardEls.forEach((el,i)=>{const T=target(mode,i,spin);let c=cur[i];if(!c){c=cur[i]=T.slice()}
-    for(let j=0;j<8;j++){if(j===4){c[j]+=norm(T[j]-c[j])*k}else c[j]+=(T[j]-c[j])*k}
-    const hov=(i%UNIQ===hovered&&ITEMS[hovered])?1.12:1;
-    el.style.transform=`translate3d(${c[0].toFixed(1)}px,${c[1].toFixed(1)}px,${c[2].toFixed(1)}px) rotateX(${c[3].toFixed(3)}rad) rotateY(${c[4].toFixed(3)}rad) rotateZ(${c[5].toFixed(3)}rad) scale(${(c[6]*hov).toFixed(3)})`;
-    el.style.opacity=c[7].toFixed(2);el.style.zIndex=Math.round(c[2]+2000);el.style.pointerEvents=c[7]<.5&&mode==='ring'?'none':'auto'});
-  const idx=((Math.round(-spin/(TAU/N))%N)+N)%N%UNIQ+1;$('#count').textContent=String(mode==='gallery'?UNIQ:idx).padStart(2,'0')+' — 0'+UNIQ}
-$('#again').addEventListener('click',()=>{});
+    for(let j=0;j<5;j++)c[j]+=(T[j]-c[j])*k;
+    const tv=tiltv[i],on=hovEl===i?1:0;tv.rx+=(tv.trx-tv.rx)*k2;tv.ry+=(tv.try_-tv.ry)*k2;tv.h+=(on-tv.h)*k2;
+    const sc=c[2]*(1+tv.h*.1),lift=-tv.h*CH*c[2]*.07,rz=tv.h*(i%2?2.5:-2.5);
+    el.style.transform=`translate(${c[0].toFixed(1)}px,${(c[1]+lift).toFixed(1)}px) perspective(700px) rotateX(${tv.rx.toFixed(2)}deg) rotateY(${tv.ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+    el.style.opacity=c[4].toFixed(2);el.style.zIndex=Math.round(c[3]*1000)+(on?2000:0);el.style.visibility=c[4]<.03?'hidden':'visible';
+    el.style.boxShadow=`0 ${(10+tv.h*18).toFixed(0)}px ${(22+tv.h*30).toFixed(0)}px -10px rgba(0,0,0,${(.3+tv.h*.2).toFixed(2)}),0 0 0 1px #0000000d`});
+  const idx=((Math.round(-spin/(TAU/N))%N)+N)%N%UNIQ+1;$('#count').textContent='0'+idx+' — 0'+UNIQ}
 (function loop(t){if(scene==='onb')onbFrame(t);else mainFrame(t);requestAnimationFrame(loop)})(0);
 window.__set=v=>{tp=p=v};window.__main=()=>{busy=true;$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';$('#main').classList.add('on');$('#again').hidden=false;layout()};
-window.__mode=m=>{mode=m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===m))};
+window.__mode=m=>{mode=m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===m))};window.__spin=()=>spin;
 </script>
 </body>
 </html>
