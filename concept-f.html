@@ -395,8 +395,8 @@ addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0||page!=='work'||idxO
 let burst=null,drag=null,wasDrag=false;
 /* drag anywhere (cards included): the ring follows the pointer directly, in every view */
 function dragDelta(e){const dx=e.clientX-drag.x,port=W<H;           // sideways only: right = cards go right, left = cards go left
-  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);return .8*dx/(cw*1.36*N/TAU)}
-  if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);return -.9*dx/(R*2.08)}
+  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);return .5*dx/(cw*1.36*N/TAU)}
+  if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);return -.55*dx/(R*2.08)}
   return dx/(S*.44)}                                                     // flat & ring: right = clockwise, left = counter-clockwise
 $('#main').addEventListener('pointerdown',e=>{if(e.button!==0||cardOpen>=0||e.target.closest('#modes,#again'))return;
   drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,moved:false,bg:!e.target.closest('.rc'),t:performance.now(),v:0,id:e.pointerId};wasDrag=false;vel=0;e.preventDefault()});
@@ -404,14 +404,14 @@ $('#main').addEventListener('dragstart',e=>e.preventDefault());
 addEventListener('pointermove',e=>{if(!drag)return;if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<6)return;
   if(!drag.moved){drag.moved=true;wasDrag=true;try{$('#main').setPointerCapture(drag.id)}catch(_){}$('#main').style.cursor='grabbing';hovered=-1;hovEl=null;showCtr()}
   const d=dragDelta(e),now=performance.now(),dt=Math.max(.008,(now-drag.t)/1000);spin+=d;drag.v=drag.v*.6+(d/dt)*.4;drag.x=e.clientX;drag.y=e.clientY;drag.t=now});
-function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<200)?Math.max(-2.5,Math.min(2.5,drag.v)):0}
+function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<200)?(m=>Math.max(-m,Math.min(m,drag.v*(m<2?.6:1))))(mode==='tilt'||mode==='gallery'?.9:2.5):0}
   else if(drag.bg&&e)burst={x:e.clientX-W/2,y:e.clientY-H/2};
   drag=null;$('#main').style.cursor='';setTimeout(()=>{wasDrag=false},0)}
 addEventListener('pointerup',endDrag);addEventListener('pointercancel',()=>endDrag(null));
 addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key==='ArrowRight')vel+=.3;if(e.key==='ArrowLeft')vel-=.3});
-const SPEED=.17;                                     // idle drift: slow, clockwise, never stops
+const SPEEDS={flat:.15,tilt:.105,ring:.17,gallery:.105};                                     // idle drift: slow, clockwise, never stops
 const sv=[];                                         // spring velocities per card
-function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
+function mainFrame(ms){const SPEED=SPEEDS[mode]||.15,heavy=mode==='tilt'||mode==='gallery';const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
   const base=RM||idxOpen||drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.12:SPEED));if(RM&&!(drag&&drag.moved))vel=0;
   spin+=(base*Math.max(0,1-Math.abs(vel)*2)+vel)*dt;vel*=Math.pow(.3,dt);if(Math.abs(vel)<.01)vel=0;
   const kh=1-Math.pow(1e-9,dt);                      // hover response (2x faster)
@@ -424,11 +424,11 @@ function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const 
     if(!RM&&hovEl!==i&&cardOpen<0){const dx=c[0]-px,dy=c[1]-py,d=Math.hypot(dx,dy)||1;if(d<PR){const f=Math.pow(1-d/PR,2)*PS*calm;T[0]+=dx/d*f;T[1]+=dy/d*f}}
     if(burst){const dx=c[0]-burst.x,dy=c[1]-burst.y,d=Math.hypot(dx,dy)||1,f=900*Math.exp(-d/(S*.45));v[0]+=dx/d*f;v[1]+=dy/d*f}
     // springy motion (a little overshoot), twice as quick as before
-    for(let j=0;j<3;j++){v[j]+=(T[j]-c[j])*170*dt;v[j]*=Math.pow(1e-7,dt);c[j]+=v[j]*dt}
+    for(let j=0;j<3;j++){v[j]+=(T[j]-c[j])*(heavy?80:170)*dt;v[j]*=Math.pow(heavy?1e-9:1e-7,dt);c[j]+=v[j]*dt}
     c[3]+=(T[3]-c[3])*kh;c[4]+=(T[4]-c[4])*kh;
     const tv=tiltv[i],on=hovEl===i?1:0;tv.rx+=(tv.trx-tv.rx)*kh;tv.ry+=(tv.try_-tv.ry)*kh;tv.h+=(on-tv.h)*kh;
     const sc=Math.max(.02,c[2])*(1+tv.h*.12),lift=-tv.h*CH*c[2]*.08;
-    const lean=Math.max(-14,Math.min(14,v[0]*.012));                       // cards lean into their own movement
+    const lean=heavy?Math.max(-4,Math.min(4,v[0]*.003)):Math.max(-14,Math.min(14,v[0]*.012));                       // cards lean into their own movement
     const rz=tv.h*(i%2?3:-3)+Math.sin(tt*.45+i)*1.6*(1-tv.h)+lean;
     el.style.transform=`translate(${c[0].toFixed(1)}px,${(c[1]+lift).toFixed(1)}px) perspective(700px) rotateX(${tv.rx.toFixed(2)}deg) rotateY(${tv.ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
     el.style.opacity=Math.max(0,Math.min(1,c[4])).toFixed(2);el.style.zIndex=Math.round(c[3]*1000)+(on?2000:0);el.style.visibility=c[4]<.03?'hidden':'visible';
