@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>유영 Light and Neon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@200;300;500;700&family=Tilt+Neon&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@200;300;500;700&family=Tilt+Neon&family=Marcellus&display=swap" rel="stylesheet">
 <style>
 /* Concept F
    1) Onboarding: standing in front of a light work (blue room, one glowing pink field). Scroll / Enter = walk into it.
@@ -95,6 +95,46 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .rc:focus-visible{outline:3px solid #111;outline-offset:4px}
 @media(max-width:700px){#quick{top:calc(22px + env(safe-area-inset-top,0px));left:auto;right:max(24px,env(safe-area-inset-right,0px))}#index .ct{display:none}#index li button{grid-template-columns:34px 1fr 24px}}
 
+#again,#quick,#index .x{display:none!important}
+.logo{pointer-events:auto;cursor:pointer;text-align:left;letter-spacing:.06em;font-weight:700;padding:0;transition:color .3s}
+.logo:hover{opacity:.7}
+#nav{position:fixed;left:250px;top:calc(22px + env(safe-area-inset-top,0px));z-index:48;display:flex;flex-direction:column;align-items:flex-start;color:#111;transition:color .3s}
+#nav .mono{font-size:11px;color:inherit;opacity:.6;margin-bottom:12px;text-transform:none;letter-spacing:.02em}
+#nav button{font-family:var(--disp);font-weight:500;font-size:24px;line-height:1;text-transform:uppercase;letter-spacing:-.01em;color:inherit;padding:0;transition:padding .2s}
+#nav button:hover{padding-left:10px}
+#nav button[aria-current=page]::before{content:"→ "}
+.logo{z-index:48}
+body.dark .logo,body.dark .logo small,body.dark #nav{color:#fff}
+body.dark #modes,body.dark #hintS,body.dark #count{display:none}
+#modes{z-index:47}
+#trans{position:fixed;inset:0;z-index:70;background:#060606;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
+#trans.on{opacity:1;visibility:visible}
+#tword{font-family:'Marcellus','Outfit',serif;font-weight:400;font-size:clamp(64px,13vw,190px);letter-spacing:.01em;color:#fff;transform:translateY(.3em);opacity:0;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .35s}
+#trans.on #tword{transform:none;opacity:1}
+.pg{position:fixed;inset:0;z-index:44;background:#060606;color:#fff;overflow-y:auto;visibility:hidden;opacity:0}
+.pg.on{visibility:visible;opacity:1}
+.pgin{width:min(1500px,100%);margin:0 auto;padding:calc(150px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) 80px max(24px,env(safe-area-inset-left,0px))}
+.pg h1{font-family:var(--disp);font-weight:500;font-size:clamp(28px,4.2vw,62px);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;color:#ff5a4f;max-width:22ch;outline:none}
+.pg .facts{margin-left:auto;width:min(100%,640px);font-family:var(--disp);font-weight:500;font-size:clamp(20px,2.6vw,38px);line-height:1.08;text-transform:uppercase;letter-spacing:-.01em;color:#ff5a4f}
+.pg .hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:2vw;margin:5vh 0 7vh}
+.pg .hero img{width:min(34vw,330px);height:auto;display:block;border-radius:6px}
+.pg .num{font-family:var(--disp);font-weight:700;font-size:clamp(50px,10.5vw,180px);line-height:.8;letter-spacing:-.05em;color:#ffffff14}
+.pg .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:36px 28px;margin-top:9vh}
+.pg h2{font-family:var(--sans);font-weight:400;font-size:13px;color:#ffffff88;margin-bottom:22px}
+.pg ul{list-style:none;padding:0;font-size:14px;line-height:1.55}
+.pg a,.pg ul button{color:#fff;text-decoration:underline;text-underline-offset:3px;padding:0;font-size:14px}
+.pg a:hover,.pg ul button:hover{color:#ff5a4f}
+.pg .todo{color:#ffffff66;font-style:italic}
+#pg-contact h1{font-size:clamp(40px,8vw,130px);max-width:14ch;margin-top:18px}
+#pg-contact .mono{color:#ffffff88}
+.mailrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:6vh;font-family:var(--disp);font-weight:300;font-size:clamp(22px,3.6vw,52px)}
+#mailtxt{user-select:all;word-break:break-all}
+#mailcopy{border:1px solid #fff;border-radius:99px;padding:8px 20px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+#mailcopy:hover{background:#fff;color:#000}
+.rc.art{cursor:grab}
+@media(max-width:800px){#nav{left:auto;right:max(24px,env(safe-area-inset-right,0px));flex-direction:row;gap:14px;align-items:center}#nav .mono{display:none}#nav button{font-size:15px}#nav button[aria-current=page]::before{content:""}#nav button[aria-current=page]{text-decoration:underline;text-underline-offset:4px}
+  .pg .hero .num{display:none}.pg .hero{justify-content:center}.pg .hero img{width:60vw}.pgin{padding-top:calc(110px + env(safe-area-inset-top,0px))}}
+
 /* card */
 /* card */
 #cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -129,7 +169,38 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="logo">유영<small>UX · Interaction Designer</small></div>
+<button class="logo" id="home" aria-label="YOOYOUNG — 메인으로">YOOYOUNG<small>UX · Interaction Designer</small></button>
+<nav id="nav" aria-label="메뉴" hidden><span class="mono">Menu</span><button data-p="work" aria-current="page">Work</button><button data-p="about">About</button><button data-p="contact">Contact</button></nav>
+<div id="trans" aria-hidden="true"><b id="tword">ABOUT</b></div>
+
+<section class="pg" id="pg-about" aria-label="About">
+  <div class="pgin">
+    <div class="facts" aria-label="Before design">
+      <p>Taekwondo sparring athlete</p><p>Rapper on stage since school</p><p>Got into university on rap</p><p>Seven years a chef in Australia</p><p>Back to school for interaction design</p><p>Into interfaces now…</p>
+    </div>
+    <div class="hero"><span class="num" aria-hidden="true">YOO</span><img src="assets/character/line-sit.png" alt="YOOYOUNG, drawn as a line character working on a laptop"><span class="num r" aria-hidden="true">YOUNG</span></div>
+    <h1 tabindex="-1">Shaping interfaces with timing, rhythm and systems, and being a good teammate to the people who build them.</h1>
+    <div class="cols">
+      <div><h2>Capabilities</h2><ul><li>User Research &amp; Planning</li><li>Information Architecture</li><li>Interaction Design</li><li>Prototyping (Figma, HTML/CSS/JS)</li><li>UI &amp; Visual Design</li><li>Inclusive, plain-language design</li></ul></div>
+      <div><h2>Selected works</h2><ul id="abworks"></ul></div>
+      <div><h2>Before UX</h2><ul><li>Timing and distance, from sparring</li><li>Rhythm and the first four bars, from rap</li><li>Mise en place under pressure, from kitchens</li></ul></div>
+      <div><h2>Education &amp; experience</h2><ul><li class="todo">To be added: school, years, roles</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="pg" id="pg-contact" aria-label="Contact">
+  <div class="pgin">
+    <p class="mono">For inquiries</p>
+    <h1 tabindex="-1">Let’s make something that moves.</h1>
+    <div class="mailrow"><span id="mailtxt">hello@your-email.com</span><button id="mailcopy">Copy</button></div>
+    <div class="cols">
+      <div><h2>Elsewhere</h2><ul><li><a href="https://github.com/theblueyoung" target="_blank" rel="noopener">GitHub ↗</a></li><li class="todo">To be added: LinkedIn, résumé</li></ul></div>
+      <div><h2>Open to</h2><ul><li>UX / Interaction design roles</li><li>In-house, agency, overseas</li></ul></div>
+      <div><h2>Location</h2><ul><li class="todo">To be added</li></ul></div>
+    </div>
+  </div>
+</section>
 
 <!-- 1. onboarding -->
 <section class="scene" id="onb" aria-label="빛의 작품">
@@ -145,14 +216,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <section class="scene" id="main" aria-label="작품 목록">
   <div id="stagewrap"><div id="ring"></div></div>
   <div id="ctr" aria-live="polite"></div>
-  <div id="modes" role="group" aria-label="보기 방식"><button data-m="flat" aria-pressed="true">Flat</button><button data-m="tilt" aria-pressed="false">Tilt</button><button data-m="ring" aria-pressed="false">Ring</button><button data-m="gallery" aria-pressed="false">Gallery</button></div>
+  <div id="modes" role="group" aria-label="보기 방식"><button data-m="flat" aria-pressed="true">Flat</button><button data-m="tilt" aria-pressed="false">Tilt</button><button data-m="ring" aria-pressed="false">Ring</button><button data-m="gallery" aria-pressed="false">Gallery</button><button data-m="index" id="idxm" aria-pressed="false" aria-haspopup="dialog">Index</button></div>
   <div id="lbl">Selected Works</div>
   <div id="quick"><button id="idxb" aria-haspopup="dialog">≡ Index</button><button id="abtb">About · Contact</button></div><div id="hintS">Drag or scroll to spin · click a card to open</div><div id="count">01 — 08</div>
+<div id="index" role="dialog" aria-modal="true" aria-label="프로젝트 목록"><button class="x" id="idxx">Close ✕</button><div class="in"><h2>Index — all works</h2><ol id="idxl"></ol></div></div>
 </section>
 <div id="cap" class="mono" hidden></div>
 <button id="again" class="mono" hidden>↺ 처음 빛으로</button>
 
-<div id="index" role="dialog" aria-modal="true" aria-label="프로젝트 목록"><button class="x" id="idxx">Close ✕</button><div class="in"><h2>Index — all works</h2><ol id="idxl"></ol></div></div>
 <div id="veil"></div>
 <div id="cardlayer"><article class="card" id="card" aria-modal="true" role="dialog"></article></div>
 
@@ -233,18 +304,32 @@ function onbFrame(t){const k=slow?.022:.07;p+=(tp-p)*k;
   if(p>.985&&!busy){busy=true;toMain()}
 }
 function toMain(){const f=$('#flash');f.classList.add('on');
-  setTimeout(()=>{$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';try{sessionStorage.setItem('yy-seen','1')}catch(_){}const m=$('#main');m.classList.add('on','adjust');$('#again').hidden=false;$('#cap').hidden=false;layout();
+  setTimeout(()=>{$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';try{sessionStorage.setItem('yy-seen','1')}catch(_){}const m=$('#main');m.classList.add('on','adjust');$('#again').hidden=false;$('#nav').hidden=false;$('#cap').hidden=false;layout();
     setTimeout(()=>f.classList.remove('on'),150)},520)}
 $('#again').onclick=()=>{if(maxed)return;const f=$('#flash');f.classList.add('on');setTimeout(()=>{$('#main').classList.remove('on','adjust');$('#again').hidden=true;$('#onb').style.display='';$('#onbtxt').style.display='';$('#onbtxt').style.opacity=1;p=tp=0;slow=false;busy=false;scene='onb';setTimeout(()=>f.classList.remove('on'),100)},520)};
 let maxed=false;
 
 /* ---------- main: the turning ring (Flat / Tilt / Ring / Gallery) ---------- */
 const N=16,UNIQ=8,TAU=Math.PI*2;
-const ITEMS=[{pi:0,n:'24dday',s:'Moving · App'},{pi:1,n:'토닥토닥',s:'Self-care · App'},{pi:2,n:'응답하라 1982',s:'Social · App'},{pi:3,n:'Visit Jeju',s:'Web · School'},{pi:4,n:'About',s:'Profile · Contact'},null,null,null];
+const ITEMS=[{pi:0,n:'24dday',s:'Moving · App'},{pi:1,n:'토닥토닥',s:'Self-care · App'},{pi:2,n:'응답하라 1982',s:'Social · App'},{pi:3,n:'Visit Jeju',s:'Web · School'},null,null,null,null];
+/* temporary artworks for the slots that have no project yet (drawn in code, replace with real projects later) */
+const ART=(()=>{const mk=f=>{const c=document.createElement('canvas');c.width=300;c.height=390;const x=c.getContext('2d');f(x,300,390);return c.toDataURL('image/jpeg',.86)};
+  const g=(x,x0,y0,x1,y1,st)=>{const q=x.createLinearGradient(x0,y0,x1,y1);st.forEach(([o,k])=>q.addColorStop(o,k));return q};
+  const rr=(x,a,b,w,h,r)=>{x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()};
+  return [
+   mk((x,W,H)=>{x.fillStyle=g(x,0,0,0,H,[[0,'#35aeea'],[1,'#62c8f6']]);x.fillRect(0,0,W,H);for(let i=0;i<5;i++){x.shadowColor='#f06aa6';x.shadowBlur=60;x.fillStyle='#f06aa633';rr(x,60,135,180,120,26);x.fill()}x.shadowBlur=14;x.fillStyle='#f472ac';rr(x,66,141,168,108,22);x.fill();x.shadowBlur=0}),
+   mk((x,W,H)=>{x.fillStyle=g(x,0,0,0,H,[[0,'#0d6f86'],[.62,'#38cfd0'],[.63,'#ff9fba'],[1,'#ff6f95']]);x.fillRect(0,0,W,H);x.fillStyle='#fff6';x.beginPath();x.arc(208,96,40,0,7);x.fill();
+     [[60,70,180,176,26],[104,150,92,96,14],[130,196,40,50,7]].forEach(([a,b,w,h,t])=>{x.fillStyle='#f2457a';x.fillRect(a,b,t,h);x.fillRect(a+w-t,b,t,h);x.fillRect(a,b,w,t);x.fillStyle='#ffffff2e';x.fillRect(a,b+h,w,1.5)});
+     x.fillStyle=g(x,0,246,0,H,[[0,'#ffffff00'],[1,'#ffffff44']]);x.fillRect(0,246,W,H)}),
+   mk((x,W,H)=>{x.fillStyle=g(x,0,0,0,H,[[0,'#0a0d24'],[.6,'#2a2f6e'],[.61,'#151733'],[1,'#0b0c1e']]);x.fillRect(0,0,W,H);x.shadowColor='#8fd8ff';x.shadowBlur=50;x.fillStyle=g(x,0,90,0,236,[[0,'#3fe0ff'],[.6,'#c9c0ff'],[1,'#ff9cc0']]);x.fillRect(112,90,76,146);x.shadowBlur=0;
+     x.globalAlpha=.35;x.fillStyle=g(x,0,238,0,360,[[0,'#ff9cc0'],[1,'#3fe0ff00']]);x.fillRect(112,238,76,120);x.globalAlpha=1;for(let i=0;i<40;i++){x.fillStyle='#ffffff'+(30+((i*37)%60)).toString(16);x.fillRect((i*73)%300,(i*41)%200,1.5,1.5)}}),
+   mk((x,W,H)=>{x.fillStyle=g(x,0,0,0,H,[[0,'#ffd9a8'],[.55,'#ffb0a0'],[1,'#c9a2e8']]);x.fillRect(0,0,W,H);x.fillStyle='#fff8ee';x.beginPath();x.arc(150,150,74,0,7);x.fill();
+     x.fillStyle='#b58fe0';for(let i=0;i<7;i++)x.fillRect(40+i*22,H-30-i*26,260-i*22,30);x.fillStyle='#8f6bd0';for(let i=0;i<7;i++)x.fillRect(40+i*22,H-4-i*26,260-i*22,4);
+     x.fillStyle='#00000022';x.beginPath();x.ellipse(150,246,60,8,0,0,7);x.fill()})]})();
 const ring=$('#ring'),ctr=$('#ctr'),cardEls=[];
 let S=700,W=1200,H=800,CW=70,CH=90,mode='flat',spin=0,vel=0,hovered=-1,hovEl=null,lastT=0,dragX=null,opening=false;
 const cur=[],tiltv=[];
-ITEMS.concat(ITEMS).forEach((it,i)=>{const el=document.createElement(it?'button':'div');el.className='rc'+(it?(P[it.pi].about?' about':''):' empty');
+ITEMS.concat(ITEMS).forEach((it,i)=>{const el=document.createElement(it?'button':'div');el.className='rc'+(it?(P[it.pi].about?' about':''):' art');
   tiltv.push({rx:0,ry:0,trx:0,try_:0,h:0});
   const enter=()=>{if(drag&&drag.moved)return;hovered=i%UNIQ;hovEl=i;showCtr()},leave=()=>{if(hovEl===i){hovered=-1;hovEl=null;showCtr()}tiltv[i].trx=tiltv[i].try_=0};
   el.addEventListener('pointerenter',enter);el.addEventListener('pointerleave',leave);
@@ -254,10 +339,10 @@ ITEMS.concat(ITEMS).forEach((it,i)=>{const el=document.createElement(it?'button'
     el.onclick=()=>{if(opening||cardOpen>=0||wasDrag)return;opening=true;   // the picked card rises first, then opens
       const a=el.animate([{translate:'0 0',scale:'1'},{translate:'0 -46px',scale:'1.22'}],{duration:170,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
       a.onfinish=()=>{openCard(it.pi,el);setTimeout(()=>{a.cancel();opening=false},700)}}}
-  else el.innerHTML='<span class="pl">Soon</span>';
+  else el.innerHTML=`<img src="${ART[(i%UNIQ)%4]}" alt="">`;
   if(i>=UNIQ||!it){el.tabIndex=-1;el.setAttribute('aria-hidden','true')}
   ring.appendChild(el);cardEls.push(el);cur.push(null)});
-function showCtr(){const it=hovered>=0?ITEMS[hovered]:null;ctr.style.opacity=it?1:0;if(it)ctr.innerHTML=`<b>${it.n}</b><small>${it.s}</small>`;ctr.dataset.m=mode}
+function showCtr(){const on=hovered>=0,it=on?ITEMS[hovered]:null;ctr.style.opacity=on?1:0;if(on)ctr.innerHTML=it?`<b>${it.n}</b><small>${it.s}</small>`:'<b>Coming soon</b><small>Placeholder artwork</small>';ctr.dataset.m=mode}
 function sizes(){W=innerWidth;H=innerHeight;S=Math.min(W,H);CW=Math.round(S*.25);CH=Math.round(CW*1.3);
   cardEls.forEach(el=>{el.style.width=CW+'px';el.style.height=CH+'px';el.style.marginLeft=-CW/2+'px';el.style.marginTop=-CH/2+'px';const ab=el.querySelector('.ab');if(ab)ab.style.fontSize=CW*.34+'px';const pl=el.querySelector('.pl');if(pl)pl.style.fontSize=CW*.12+'px'})}
 function layout(){sizes()}
@@ -274,8 +359,8 @@ function target(m,i,sp){const a=i/N*TAU+sp,port=W<H;
   const R=port?W*.6:Math.min(W*.5,H*.8),f=R*1.6,z=R*Math.cos(a),s=f/(f-z);   // gallery: a horizontal carousel seen level
   const cw=(port?W*.3:Math.min(W*.19,H*.33))/2.67;return [-R*Math.sin(a)*s*.78,-z*.03,s*cw/CW,(Math.cos(a)+1)/2,1]}
 let prevMode='flat',modeAt=-1e9;
-$$('#modes button').forEach(b=>b.onclick=()=>{if(b.dataset.m!==mode){prevMode=mode;modeAt=performance.now()}mode=b.dataset.m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));showCtr()});
-addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0)return;vel+=(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*.004;vel=Math.max(-9,Math.min(9,vel))},{passive:true});
+$$('#modes button').forEach(b=>b.onclick=()=>{if(b.dataset.m==='index'){setIndex(!idxOpen);return}if(idxOpen)setIndex(false);if(b.dataset.m!==mode){prevMode=mode;modeAt=performance.now()}mode=b.dataset.m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));showCtr()});
+addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0||page!=='work'||idxOpen)return;vel+=(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*.004;vel=Math.max(-9,Math.min(9,vel))},{passive:true});
 let burst=null,drag=null,wasDrag=false;
 /* drag anywhere (cards included): the ring follows the pointer directly, in every view */
 function dragDelta(e){const dx=e.clientX-drag.x,port=W<H;           // sideways only: right = cards go right, left = cards go left
@@ -293,7 +378,7 @@ function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t
   drag=null;$('#main').style.cursor='';setTimeout(()=>{wasDrag=false},0)}
 addEventListener('pointerup',endDrag);addEventListener('pointercancel',()=>endDrag(null));
 addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key==='ArrowRight')vel+=.3;if(e.key==='ArrowLeft')vel-=.3});
-const SPEED=.12;                                     // idle drift: slow, clockwise, never stops
+const SPEED=.085;                                     // idle drift: slow, clockwise, never stops
 const sv=[];                                         // spring velocities per card
 function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
   const base=RM||idxOpen||drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.12:SPEED));if(RM&&!(drag&&drag.moved))vel=0;
@@ -323,13 +408,22 @@ function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const 
 /* Index: a plain list for people in a hurry, keyboards and screen readers */
 let idxOpen=false;
 ITEMS.forEach((it,k)=>{if(!it)return;const li=document.createElement('li');li.innerHTML=`<button><span class="no">0${k+1}</span><span class="nm">${it.n}</span><span class="ct">${it.s}</span><span aria-hidden="true">↗</span></button>`;
-  li.firstChild.onclick=()=>{const b=li.firstChild;setIndex(false);openCard(it.pi,b);lastFocus=$('#idxb')};$('#idxl').appendChild(li)});
-function setIndex(v){idxOpen=v;$('#index').classList.toggle('on',v);if(v)setTimeout(()=>$('#idxl button').focus(),40);else $('#idxb').focus({preventScroll:true})}
-$('#idxb').onclick=()=>setIndex(true);$('#idxx').onclick=()=>setIndex(false);
-$('#abtb').onclick=()=>openCard(4,$('#abtb'));
+  li.firstChild.onclick=()=>{const b=li.firstChild;setIndex(false);openCard(it.pi,b);lastFocus=$('#idxm')};$('#idxl').appendChild(li)});
+function setIndex(v){idxOpen=v;$('#index').classList.toggle('on',v);$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',v?x.dataset.m==='index':x.dataset.m===mode));if(v)setTimeout(()=>$('#idxl button').focus(),40)}
+/* pages: Work (the ring) / About / Contact, with a big word wipe in between */
+let page='work',navBusy=false;
+function applyPage(n){page=n;document.body.classList.toggle('dark',n!=='work');$('#pg-about').classList.toggle('on',n==='about');$('#pg-contact').classList.toggle('on',n==='contact');
+  $$('#nav button').forEach(b=>{if(b.dataset.p===n)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  const pg=n==='work'?null:$('#pg-'+n);if(pg){pg.scrollTop=0;const h=pg.querySelector('h1');h&&h.focus({preventScroll:true})}}
+function navigate(n){if(navBusy||scene!=='main')return;if(cardOpen>=0)closeCard();if(idxOpen)setIndex(false);if(n===page)return;
+  if(RM){applyPage(n);return}navBusy=true;const tr=$('#trans');$('#tword').textContent=n.toUpperCase();tr.classList.add('on');
+  setTimeout(()=>applyPage(n),420);setTimeout(()=>{tr.classList.remove('on');navBusy=false},950)}
+$$('#nav button').forEach(b=>b.onclick=()=>navigate(b.dataset.p));
+$('#home').onclick=()=>navigate('work');
+ITEMS.forEach(it=>{if(!it)return;const li=document.createElement('li');li.innerHTML=`<button>${it.n}</button>`;li.firstChild.onclick=()=>{const b=li.firstChild;openCard(it.pi,b)};$('#abworks').appendChild(li)});
+$('#mailcopy').onclick=async()=>{const b=$('#mailcopy');try{await navigator.clipboard.writeText($('#mailtxt').textContent);b.textContent='Copied'}catch(_){const r=document.createRange();r.selectNodeContents($('#mailtxt'));getSelection().removeAllRanges();getSelection().addRange(r);b.textContent='Selected'}setTimeout(()=>b.textContent='Copy',1600)};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&idxOpen&&cardOpen<0)setIndex(false)});
-try{if(sessionStorage.getItem('yy-seen'))setTimeout(()=>{if(scene==='onb')window.__main()},0)}catch(_){}
-window.__set=v=>{tp=p=v};window.__main=()=>{busy=true;$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';$('#main').classList.add('on');$('#again').hidden=false;layout()};
+window.__set=v=>{tp=p=v};window.__main=()=>{busy=true;$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';$('#main').classList.add('on');$('#again').hidden=false;$('#nav').hidden=false;layout()};
 window.__mode=m=>{mode=m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===m))};window.__spin=()=>spin;
 </script>
 </body>
