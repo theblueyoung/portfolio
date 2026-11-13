@@ -75,6 +75,26 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .logo{color:#111;text-shadow:none}.logo small{color:#111a}
 @media(max-width:700px){#hintS{display:none}#count{left:max(24px,env(safe-area-inset-left,0px));transform:none}#modes button{padding:8px 14px;font-size:13px}#lbl{top:calc(84px + env(safe-area-inset-top,0px))}#modes{top:calc(70px + env(safe-area-inset-top,0px));left:max(24px,env(safe-area-inset-left,0px));right:auto;justify-content:flex-start}#lbl{display:none}}
 
+#quick{position:fixed;left:max(24px,env(safe-area-inset-left,0px));top:calc(88px + env(safe-area-inset-top,0px));z-index:30;display:flex;gap:8px}
+#quick button{padding:8px 16px;border-radius:99px;border:1px solid #11111188;background:#ffffffaa;color:#111;font-size:13px;transition:background .2s,color .2s}
+#quick button:hover,#quick button:focus-visible{background:#111;color:#fff}
+#lbl{display:none}
+#index{position:fixed;inset:0;z-index:45;background:#eeeeeef2;backdrop-filter:blur(14px);color:#111;display:flex;flex-direction:column;visibility:hidden;opacity:0;transition:opacity .2s,visibility .2s;overflow:auto;cursor:default}
+#index.on{visibility:visible;opacity:1}
+#index .in{width:min(880px,100%);margin:auto;padding:calc(90px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) 60px max(24px,env(safe-area-inset-left,0px))}
+#index h2{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:#111a;margin-bottom:10px}
+#index ol{list-style:none;padding:0;border-top:1px solid #1113}
+#index li button{display:grid;grid-template-columns:44px 1fr auto 28px;gap:14px;align-items:baseline;width:100%;text-align:left;padding:18px 4px;border-bottom:1px solid #1113;color:#111;transition:padding .18s,background .18s}
+#index li button:hover,#index li button:focus-visible{padding-left:16px;background:#1111110d}
+#index .no{font-family:var(--mono);font-size:12px;color:#111a}
+#index .nm{font-family:var(--disp);font-weight:300;font-size:clamp(26px,4.4vw,46px);line-height:1.05;letter-spacing:-.01em}
+#index .ct{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#111a;white-space:nowrap}
+#index .x{position:fixed;right:max(24px,env(safe-area-inset-right,0px));top:calc(22px + env(safe-area-inset-top,0px));padding:9px 20px;border-radius:99px;border:1px solid #111;background:#fff;color:#111;font-size:14px}
+#index .x:hover{background:#111;color:#fff}
+.rc.empty{cursor:grab}.rc.empty .pl{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#00000055;font-weight:400}
+.rc:focus-visible{outline:3px solid #111;outline-offset:4px}
+@media(max-width:700px){#quick{top:calc(22px + env(safe-area-inset-top,0px));left:auto;right:max(24px,env(safe-area-inset-right,0px))}#index .ct{display:none}#index li button{grid-template-columns:34px 1fr 24px}}
+
 /* card */
 /* card */
 #cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -126,11 +146,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div id="stagewrap"><div id="ring"></div></div>
   <div id="ctr" aria-live="polite"></div>
   <div id="modes" role="group" aria-label="보기 방식"><button data-m="flat" aria-pressed="true">Flat</button><button data-m="tilt" aria-pressed="false">Tilt</button><button data-m="ring" aria-pressed="false">Ring</button><button data-m="gallery" aria-pressed="false">Gallery</button></div>
-  <div id="lbl">Selected Works</div><div id="hintS">Drag to spin · scroll · click the space</div><div id="count">01 — 08</div>
+  <div id="lbl">Selected Works</div>
+  <div id="quick"><button id="idxb" aria-haspopup="dialog">≡ Index</button><button id="abtb">About · Contact</button></div><div id="hintS">Drag or scroll to spin · click a card to open</div><div id="count">01 — 08</div>
 </section>
 <div id="cap" class="mono" hidden></div>
 <button id="again" class="mono" hidden>↺ 처음 빛으로</button>
 
+<div id="index" role="dialog" aria-modal="true" aria-label="프로젝트 목록"><button class="x" id="idxx">Close ✕</button><div class="in"><h2>Index — all works</h2><ol id="idxl"></ol></div></div>
 <div id="veil"></div>
 <div id="cardlayer"><article class="card" id="card" aria-modal="true" role="dialog"></article></div>
 
@@ -190,6 +212,10 @@ function swap(d){const n=(cardOpen+d+P.length)%P.length;const c=$('#card');c.ani
 new ResizeObserver(fit).observe($('#card'));
 
 
+/* focus management for the project card: move focus in, give it back on close */
+let lastFocus=null;const _open=openCard,_close=closeCard;
+openCard=function(i,el){if(cardOpen<0)lastFocus=document.activeElement;_open(i,el);setTimeout(()=>{const x=$('#xb');x&&x.focus()},60)};
+closeCard=function(){const was=cardOpen>=0;_close();if(was&&lastFocus&&lastFocus.focus){try{lastFocus.focus({preventScroll:true})}catch(_){}}};
 /* ---------- onboarding: walk into the light ---------- */
 let scene='onb',p=0,tp=0,slow=false,busy=false,mx=0,my=0;const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
 addEventListener('wheel',e=>{if(scene!=='onb'||busy)return;slow=false;tp=cl(tp+e.deltaY*.0006,0,1)},{passive:true});
@@ -208,7 +234,7 @@ function onbFrame(t){const k=slow?.022:.07;p+=(tp-p)*k;
   if(p>.985&&!busy){busy=true;toMain()}
 }
 function toMain(){const f=$('#flash');f.classList.add('on');
-  setTimeout(()=>{$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';const m=$('#main');m.classList.add('on','adjust');$('#again').hidden=false;$('#cap').hidden=false;layout();
+  setTimeout(()=>{$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';try{sessionStorage.setItem('yy-seen','1')}catch(_){}const m=$('#main');m.classList.add('on','adjust');$('#again').hidden=false;$('#cap').hidden=false;layout();
     setTimeout(()=>f.classList.remove('on'),150)},520)}
 $('#again').onclick=()=>{if(maxed)return;const f=$('#flash');f.classList.add('on');setTimeout(()=>{$('#main').classList.remove('on','adjust');$('#again').hidden=true;$('#onb').style.display='';$('#onbtxt').style.display='';$('#onbtxt').style.opacity=1;p=tp=0;slow=false;busy=false;scene='onb';setTimeout(()=>f.classList.remove('on'),100)},520)};
 let maxed=false;
@@ -229,11 +255,12 @@ ITEMS.concat(ITEMS).forEach((it,i)=>{const el=document.createElement(it?'button'
     el.onclick=()=>{if(opening||cardOpen>=0||wasDrag)return;opening=true;   // the picked card rises first, then opens
       const a=el.animate([{translate:'0 0',scale:'1'},{translate:'0 -46px',scale:'1.22'}],{duration:170,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
       a.onfinish=()=>{openCard(it.pi,el);setTimeout(()=>{a.cancel();opening=false},700)}}}
-  else el.innerHTML='<span class="pl">+</span>';
+  else el.innerHTML='<span class="pl">Soon</span>';
+  if(i>=UNIQ||!it){el.tabIndex=-1;el.setAttribute('aria-hidden','true')}
   ring.appendChild(el);cardEls.push(el);cur.push(null)});
 function showCtr(){const it=hovered>=0?ITEMS[hovered]:null;ctr.style.opacity=it?1:0;if(it)ctr.innerHTML=`<b>${it.n}</b><small>${it.s}</small>`;ctr.dataset.m=mode}
 function sizes(){W=innerWidth;H=innerHeight;S=Math.min(W,H);CW=Math.round(S*.25);CH=Math.round(CW*1.3);
-  cardEls.forEach(el=>{el.style.width=CW+'px';el.style.height=CH+'px';el.style.marginLeft=-CW/2+'px';el.style.marginTop=-CH/2+'px';const ab=el.querySelector('.ab');if(ab)ab.style.fontSize=CW*.34+'px';const pl=el.querySelector('.pl');if(pl)pl.style.fontSize=CW*.5+'px'})}
+  cardEls.forEach(el=>{el.style.width=CW+'px';el.style.height=CH+'px';el.style.marginLeft=-CW/2+'px';el.style.marginTop=-CH/2+'px';const ab=el.querySelector('.ab');if(ab)ab.style.fontSize=CW*.34+'px';const pl=el.querySelector('.pl');if(pl)pl.style.fontSize=CW*.12+'px'})}
 function layout(){sizes()}
 addEventListener('resize',sizes);sizes();
 /* returns [x, y, scale, depth(0 far..1 near), opacity] for card i */
@@ -270,16 +297,16 @@ addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key===
 const SPEED=.12;                                     // idle drift: slow, clockwise, never stops
 const sv=[];                                         // spring velocities per card
 function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
-  const base=drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.35:SPEED));
+  const base=RM||idxOpen||drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.12:SPEED));if(RM&&!(drag&&drag.moved))vel=0;
   spin+=(base*Math.max(0,1-Math.abs(vel)*2)+vel)*dt;vel*=Math.pow(.3,dt);if(Math.abs(vel)<.01)vel=0;
   const kh=1-Math.pow(1e-9,dt);                      // hover response (2x faster)
   const px=mx*W,py=my*H,PR=S*.27,PS=S*.085,calm=hovered>=0?.25:1;
   cardEls.forEach((el,i)=>{const m=(ms-modeAt<i*26)?prevMode:mode;const T=target(m,i,spin);let c=cur[i];if(!c){c=cur[i]=T.slice()}
     const v=sv[i]||(sv[i]=[0,0,0]);
     // floating layout: every card drifts on its own little orbit
-    const fl=CW*T[2]*.06;T[0]+=Math.sin(tt*.7+i*1.7)*fl;T[1]+=Math.cos(tt*.55+i*2.3)*fl*1.2;
+    const fl=RM?0:CW*T[2]*.06;T[0]+=Math.sin(tt*.7+i*1.7)*fl;T[1]+=Math.cos(tt*.55+i*2.3)*fl*1.2;
     // playful push: cards lean away from the cursor
-    if(hovEl!==i&&cardOpen<0){const dx=c[0]-px,dy=c[1]-py,d=Math.hypot(dx,dy)||1;if(d<PR){const f=Math.pow(1-d/PR,2)*PS*calm;T[0]+=dx/d*f;T[1]+=dy/d*f}}
+    if(!RM&&hovEl!==i&&cardOpen<0){const dx=c[0]-px,dy=c[1]-py,d=Math.hypot(dx,dy)||1;if(d<PR){const f=Math.pow(1-d/PR,2)*PS*calm;T[0]+=dx/d*f;T[1]+=dy/d*f}}
     if(burst){const dx=c[0]-burst.x,dy=c[1]-burst.y,d=Math.hypot(dx,dy)||1,f=900*Math.exp(-d/(S*.45));v[0]+=dx/d*f;v[1]+=dy/d*f}
     // springy motion (a little overshoot), twice as quick as before
     for(let j=0;j<3;j++){v[j]+=(T[j]-c[j])*170*dt;v[j]*=Math.pow(1e-7,dt);c[j]+=v[j]*dt}
@@ -294,6 +321,15 @@ function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const 
   burst=null;
   const idx=((Math.round(-spin/(TAU/N))%N)+N)%N%UNIQ+1;$('#count').textContent='0'+idx+' — 0'+UNIQ}
 (function loop(t){if(scene==='onb')onbFrame(t);else mainFrame(t);requestAnimationFrame(loop)})(0);
+/* Index: a plain list for people in a hurry, keyboards and screen readers */
+let idxOpen=false;
+ITEMS.forEach((it,k)=>{if(!it)return;const li=document.createElement('li');li.innerHTML=`<button><span class="no">0${k+1}</span><span class="nm">${it.n}</span><span class="ct">${it.s}</span><span aria-hidden="true">↗</span></button>`;
+  li.firstChild.onclick=()=>{const b=li.firstChild;setIndex(false);openCard(it.pi,b);lastFocus=$('#idxb')};$('#idxl').appendChild(li)});
+function setIndex(v){idxOpen=v;$('#index').classList.toggle('on',v);if(v)setTimeout(()=>$('#idxl button').focus(),40);else $('#idxb').focus({preventScroll:true})}
+$('#idxb').onclick=()=>setIndex(true);$('#idxx').onclick=()=>setIndex(false);
+$('#abtb').onclick=()=>openCard(4,$('#abtb'));
+addEventListener('keydown',e=>{if(e.key==='Escape'&&idxOpen&&cardOpen<0)setIndex(false)});
+try{if(sessionStorage.getItem('yy-seen'))setTimeout(()=>{if(scene==='onb')window.__main()},0)}catch(_){}
 window.__set=v=>{tp=p=v};window.__main=()=>{busy=true;$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';$('#main').classList.add('on');$('#again').hidden=false;layout()};
 window.__mode=m=>{mode=m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.m===m))};window.__spin=()=>spin;
 </script>
