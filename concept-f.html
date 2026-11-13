@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>유영 Light and Neon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@200;300;500;700&family=Tilt+Neon&display=swap" rel="stylesheet">
+<style>
+/* Concept F
+   1) Onboarding: standing in front of a light work (blue room, one glowing pink field). Scroll / Enter = walk into it.
+   2) Main: a photo of a neon wall at the museum. The wall's text is replaced by the portfolio's project titles in neon. */
+:root{color-scheme:dark;--ink:#fff;--mute:#ffffffb8;--disp:'Outfit','Noto Sans KR',sans-serif;--sans:'Noto Sans KR',sans-serif;--mono:'DM Mono',ui-monospace,monospace;
+--neon:'Tilt Neon','Jua','Noto Sans KR',sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#3bb4ee;color:#fff;font-family:var(--sans)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.logo{position:fixed;left:max(24px,env(safe-area-inset-left,0px));top:calc(22px + env(safe-area-inset-top,0px));z-index:30;font-family:var(--disp);font-weight:500;font-size:22px;letter-spacing:.01em;text-shadow:0 0 14px #0004;pointer-events:none}
+.logo small{display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-top:3px}
+.scene{position:fixed;inset:0}
+
+/* ============ 1. onboarding: light work ============ */
+#onb{z-index:10;overflow:hidden;background:linear-gradient(#36b0ec 0%,#43b9f0 55%,#5ac6f6 100%)}
+#onb .world{position:absolute;inset:0;transform-origin:50% 49%;will-change:transform}
+#onb .l{position:absolute;left:50%;top:49%;border-radius:7vmin;transform:translate(-50%,-50%);will-change:transform,opacity}
+#onb .h5{width:118vw;height:78vh;background:#7aa6e6;filter:blur(110px);opacity:.28}
+#onb .h4{width:86vw;height:60vh;background:#8d92dc;filter:blur(80px);opacity:.42}
+#onb .h3{width:64vw;height:44vh;background:#a78ad2;filter:blur(56px);opacity:.55}
+#onb .h2{width:50vw;height:34vh;background:#cf7fbd;filter:blur(32px);opacity:.7}
+#onb .h1{width:43vw;height:30vh;background:#f06aa6;filter:blur(10px);opacity:.96}
+#onb .core{width:41vw;height:28vh;background:linear-gradient(#f26fa9,#ea63a2);filter:blur(2.4px);box-shadow:inset 0 0 38px #ff9ec8aa;animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{50%{filter:blur(2.4px) brightness(1.06) saturate(1.08)}}
+#onb .floor{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(#0000,#7ad3f7aa 70%,#8ddbfa);pointer-events:none}
+#onb .grainv{position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+#onbtxt{position:fixed;left:0;right:0;bottom:calc(30px + env(safe-area-inset-bottom,0px));z-index:30;text-align:center;pointer-events:none;transition:opacity .5s}
+#enter{pointer-events:auto;margin-top:12px;padding:12px 28px;border:1px solid #ffffffcc;border-radius:99px;background:#ffffff1c;backdrop-filter:blur(8px);font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;transition:background .25s,color .25s}
+#enter:hover{background:#fff;color:#2a8fcf}
+#onbtxt p{font-weight:300;color:#ffffffd9;text-shadow:0 0 14px #1a6fb888;font-size:14px}
+#flash{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 49%,#fff,#ffd3e8 55%,#ff9fc8);transition:opacity .45s}
+#flash.on{opacity:1}
+
+/* ============ 2. main: neon wall photo ============ */
+#main{z-index:5;background:#0b0508;visibility:hidden;opacity:0}
+#main.on{visibility:visible;opacity:1}
+#main.adjust .ph{animation:adj 2.8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes adj{from{filter:brightness(2.6) saturate(.4) blur(10px)}to{filter:none}}
+.ph{position:absolute;left:0;top:0;will-change:transform}
+.ph img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.board{position:absolute;left:29.9%;top:33.2%;width:42.2%;height:27.2%;background:linear-gradient(#cfc6be,#b9aea6);box-shadow:inset 0 0 0 .25cqw #00000022,0 0 6cqw #ff6a9a66;container-type:size;overflow:hidden}
+.board::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 46%,transparent 40%,#2a141c66 100%);pointer-events:none}
+.rows{position:absolute;inset:7cqh 6cqw 7cqh 6cqw;display:flex;flex-direction:column;justify-content:space-between}
+.row{position:relative;display:flex;align-items:baseline;gap:4cqw;cursor:pointer;text-align:left;width:100%;transition:opacity .35s,filter .35s,transform .35s;--c:#ff3d8b}
+.rows:hover .row{opacity:.38;filter:saturate(.7)}
+.rows .row:hover,.rows .row:focus-visible{opacity:1;filter:none;transform:translateX(1.2cqw)}
+.row .n{font-family:var(--mono);font-size:3.1cqw;letter-spacing:.1em;color:#00000066;width:7cqw;flex:none}
+.row .t{font-family:var(--neon);font-size:9.6cqw;line-height:1;letter-spacing:.01em;color:color-mix(in srgb,var(--c) 14%,#fff);-webkit-text-stroke:.9cqw var(--c);paint-order:stroke fill;
+  text-shadow:0 0 1.4cqw var(--c),0 0 4cqw var(--c),0 0 9cqw var(--c),.6cqw .8cqw 0 #0000003d;animation:fl var(--d,6s) infinite var(--dl,0s)}
+.row:hover .t{text-shadow:0 0 1.6cqw #fff,0 0 4cqw var(--c),0 0 9cqw var(--c),0 0 16cqw var(--c),.6cqw .8cqw 0 #0000003d}
+.row .t small{font-family:var(--mono);font-size:2.6cqw;letter-spacing:.12em;margin-left:2cqw;opacity:.7;-webkit-text-stroke:0;text-shadow:none;color:#000a;text-transform:uppercase}
+@keyframes fl{0%,16%,18%,63%,65%,100%{opacity:1}17%,64%{opacity:.55}}
+.spill{position:absolute;left:0;right:0;top:58%;bottom:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(ellipse at 51% 18%,color-mix(in srgb,var(--hc,#ff5c9a) 80%,#fff) 0,transparent 55%);opacity:.0;transition:opacity .5s,background .5s}
+#main.hov .spill{opacity:.34}
+.vign{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,transparent 58%,#0008 100%),linear-gradient(#0000 68%,#050205aa)}
+#cap{position:fixed;left:max(24px,env(safe-area-inset-left,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:30;color:var(--mute);pointer-events:none;max-width:60vw}
+#again{position:fixed;right:max(24px,env(safe-area-inset-right,0px));bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:30;padding:8px 16px;border:1px solid #ffffff66;border-radius:99px;background:#0006;backdrop-filter:blur(6px);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+#again:hover{background:#fff;color:#000}
+
+/* card */
+/* card */
+#cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
+#cardlayer.on{pointer-events:auto}
+#veil{position:fixed;inset:0;z-index:49;background:#0a1c3acc;opacity:0;visibility:hidden;transition:opacity .4s}
+#veil.on{opacity:1;visibility:visible}
+.card{position:relative;width:min(1000px,94vw);height:min(640px,86vh);background:#fff;border-radius:22px;overflow:hidden;display:grid;grid-template-columns:minmax(260px,38%) 1fr;box-shadow:0 40px 100px #0006;visibility:hidden}
+.card.on{visibility:visible}
+.cl2{background:var(--c);position:relative;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+.cl2::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 30% 20%,#ffffff66,transparent 55%)}
+.phw{position:relative;height:100%;max-height:520px;aspect-ratio:9/18.4;border-radius:30px;overflow:hidden;background:#000;box-shadow:0 0 0 7px #111,0 24px 50px #0005}
+.phw iframe,.phw img{position:absolute;left:0;top:0;width:390px;height:800px;border:0;transform-origin:0 0;background:#fff;object-fit:cover;object-position:top}
+.cr{padding:clamp(18px,3vw,34px);overflow:auto;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cr .c{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.cr h2{font-family:var(--disp);font-weight:700;font-size:clamp(34px,5vw,60px);line-height:1;letter-spacing:-.02em}
+.cr .o{font-size:17px;font-weight:300}
+.cr dl{display:grid;grid-template-columns:96px 1fr;border-top:1px solid #0001}
+.cr dt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);padding:12px 0;border-bottom:1px solid #0001}
+.cr dd{margin:0;padding:10px 0;border-bottom:1px solid #0001;font-size:14px}
+.cr dd ul{padding-left:18px}
+.cr .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.cr .btns a,.cr .btns button{border:1px solid var(--ink);border-radius:99px;padding:8px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink)}
+.cr .btns a:hover,.cr .btns button:hover{background:var(--ink);color:#fff}
+.xb{position:absolute;right:14px;top:14px;z-index:3;width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #0002;font-size:16px}
+.xb:hover{background:var(--ink);color:#fff}
+
+#cardlayer{z-index:50}
+.cr h2{color:#14141c}.card{color:#14141c}.cr .c,.cr dt{color:#6f6e80}.cr .o,.cr dd{color:#14141c}.cr .btns a,.cr .btns button{color:#14141c}.cr .btns a:hover,.cr .btns button:hover{color:#fff}
+@media(max-width:800px){.logo small{display:none}#cap{display:none}.card{grid-template-columns:1fr;grid-template-rows:42% 1fr;height:90vh}.cl2{padding:12px}.phw{max-height:100%;border-radius:22px;box-shadow:0 0 0 5px #111}
+  #onb .core{width:66vw;height:22vh}#onb .h1{width:70vw;height:24vh}#onb .h2{width:84vw;height:28vh}#onb .h3{width:100vw;height:36vh}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div class="logo">유영<small>UX · Interaction Designer</small></div>
+
+<!-- 1. onboarding -->
+<section class="scene" id="onb" aria-label="빛의 작품">
+  <div class="world" id="world">
+    <i class="l h5"></i><i class="l h4"></i><i class="l h3"></i><i class="l h2"></i><i class="l h1"></i><i class="l core"></i>
+  </div>
+  <div class="floor"></div><div class="grainv"></div>
+</section>
+<div id="onbtxt"><p>스크롤하거나 Enter를 눌러, 빛 속으로 걸어 들어가세요</p><button id="enter">Enter ↵</button></div>
+<div id="flash"></div>
+
+<!-- 2. main -->
+<section class="scene" id="main" aria-label="작품 목록">
+  <div class="ph" id="ph">
+    <img src="assets/photos/naoshima-wall.jpg" alt="미술관의 네온 벽 작품" draggable="false">
+    <div class="spill" id="spill"></div>
+    <div class="board" id="board"><div class="rows" id="rows"></div></div>
+  </div>
+  <div class="vign"></div>
+</section>
+<div id="cap" class="mono" hidden>프로젝트에 마우스를 올리면 불이 켜져요 · 눌러서 열기</div>
+<button id="again" class="mono" hidden>↺ 처음 빛으로</button>
+
+<div id="veil"></div>
+<div id="cardlayer"><article class="card" id="card" aria-modal="true" role="dialog"></article></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const COVERS={'24dday':'assets/covers/24dday.png','todottodot':'assets/covers/todottodot.png','memory':'assets/covers/memory.png','jeju':'assets/covers/jeju.png'};
+/* where each project's interactive prototype lives (repo build). The standalone build swaps these for inline copies. */
+const PROTO={'24dday':'projects/24dday/index.html','todottodot':'projects/todottodot/index.html','memory':'projects/memory/eungdap-1982.html','jeju':'projects/jeju/index.html'};
+const REPO={'24dday':'24dday','todottodot':'todottodot','memory':'memory','jeju':'usyd_jeju'};
+const P=[
+ {k:'24dday',c:'#7a4dff',lab:'24dday',cat:'Mobile app · Moving',t:'24dday',one:'잔금일 하나로 이사 일정을 거꾸로 짜주는 앱',
+  rows:[['Why','이사는 계약·대출·서류·청소·전입신고가 얽힌 큰일인데, 모든 일이 "잔금일" 하나를 기준으로 움직여요. 그래서 잔금일을 중심에 두고 할 일을 역산해 챙겨주는 앱으로 기획했어요.'],
+   ['Who','이사가 처음이거나 함께 사는 사람과 과정을 공유하고 싶은 20~50대. 글보다 시각적 표현, 용어 한 줄 설명, 한 화면에 한 행동.'],
+   ['Design','<ul><li>매도와 매수를 하나의 "이사 프로젝트"로 묶음</li><li>날짜 하나를 바꾸면 나머지가 같이 움직이고, 순서가 꼬이면 경고</li><li>가족 공유, 담당자 지정, 서류 체크리스트</li><li>하단 5탭: 홈 · 일정 · 자금 · 서비스 · 커뮤니티</li></ul>'],
+   ['Process','문제 정의 → 해외 레퍼런스(My Move, PEXA Key, Rello, Muving) → 거래 유형별 타임라인 → IA → 스토리보드 → 컬러 3안 탐색 → 프로토타입'],
+   ['Result','화면 45개 규모의 모바일 프로토타입 완성. 사용자 테스트 지표는 아직 없음.']]},
+ {k:'todottodot',c:'#ff7fc3',lab:'토닥토닥',cat:'Mobile app · Self-care',t:'토닥토닥',one:'작은 미션으로 자존감을 키우는 픽셀 캐릭터 앱',
+  rows:[['Why','"캐릭터가 방을 청소할 때, 나도 진짜 내 방을 청소한다." 화면 속 캐릭터와 같은 행동을 함께하며 작은 성공을 쌓게 해요.'],
+   ['Loop','마음 체크 → 기분에 맞는 미션 추천 → 캐릭터와 함께 실제 행동 → 레벨업 시 방이 밝아짐 (Lv1 어두운 방 → Lv8 공원)'],
+   ['Principles','<ul><li>벌점 없음. 멈춰도 "여기까지만 해도 괜찮아요"</li><li>성별 선택 없는 포용적 캐릭터</li><li>위기 상담 안내 상시 노출</li><li>한국어/영어 전환</li></ul>'],
+   ['Result','미션 10종과 5단계 성장 장면이 작동하는 프로토타입.']]},
+ {k:'memory',c:'#ffd23d',lab:'응답하라 1982',cat:'Mobile app · Social',t:'응답하라 1982',one:'친구들과 사진첩·교환일기·음악을 나누는 레트로 앱',
+  rows:[['Why','실물 사진첩과 교환일기의 온기를 되살려, 친한 친구들끼리만 쓰는 작은 추억 공간을 만들어요.'],
+   ['Parts','미니홈피 · 방명록 · 사진(스캔 연출) · 음악 · 다이어리(교환일기) · 삐삐번호'],
+   ['Notes','음악은 파일 재생이 아니라 스트리밍 링크 공유(저작권). 이름과 고유 용어는 출시 전 새로 정해야 해요.'],
+   ['Result','두 가지 콘셉트(오래된 서랍 / 응답하라 1982)를 만들고 하나를 발전시킴.']]},
+ {k:'jeju',c:'#54ff9a',lab:'Visit Jeju',cat:'Website · Responsive',t:'Visit Jeju',one:'제주 슬로우 트래블 관광 웹사이트',
+  rows:[['Overview','모바일 우선으로 만든 5페이지 관광 웹사이트. HTML/CSS만으로 구현(JavaScript 없음).'],
+   ['Build','Flexbox와 미디어쿼리로 반응형 구성, CSS 전용 햄버거 메뉴.'],
+   ['Why it matters','코드로 구조를 직접 짜본 첫 단계. 지금 프로토타입을 직접 만드는 바탕이 된 작업.']]},
+ {k:'about',c:'#3de0ff',lab:'About · Contact',cat:'About me',t:'유영',one:'UX 인터랙션 디자이너',about:true,
+  rows:[['About','사람이 어디서 막히는지 먼저 보고, 그 자리에 가장 작은 움직임을 둡니다.'],
+   ['Before UX','태권도 겨루기 선수, 힙합 래퍼, 호주의 요리사를 거쳤어요. 거리와 타이밍, 리듬, 바쁜 주방의 시스템이 지금 인터랙션을 설계하는 방식이 됐어요.'],
+   ['Skills','Research & Planning · Interaction & Prototyping · Visual/UI · Inclusive design'],
+   ['Contact','<span style="user-select:all">hello@your-email.com</span> (확정되면 교체)']]}];
+
+const playTrack=()=>{},sfxPop=()=>{};let cardOpen=-1;
+/* ---------------- card ---------------- */
+function fit(){const w=$('#card .phw');if(!w)return;const s=w.clientWidth/390;$$('#card .phw iframe,#card .phw img').forEach(e=>e.style.transform=`scale(${s})`);const fr=$('#card iframe');if(fr)fr.style.height=(w.clientHeight/s)+'px'}
+function fill(i){const p=P[i],has=!!PROTO[p.k],c=$('#card');cardOpen=i;
+  const left=p.about?`<div class="cl2" style="--c:${p.c}"><span style="font-family:var(--disp);font-weight:700;font-size:clamp(70px,12vw,130px);color:#fff;letter-spacing:-.04em">유영</span></div>`
+    :`<div class="cl2" style="--c:${p.c}"><div class="phw">${has?`<iframe title="${p.t} 프로토타입" loading="lazy"></iframe>`:`<img src="${COVERS[p.k]}" alt="${p.t} 화면">`}</div></div>`;
+  c.innerHTML=`<button class="xb" id="xb" aria-label="닫기">✕</button>${left}<div class="cr"><div class="c">${p.cat}${!p.about&&!has?' · 화면 캡처':''}</div><h2>${p.t}</h2><div class="o">${p.one}</div><dl>${p.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>
+    <div class="btns">${p.about?'':`<a href="https://github.com/theblueyoung/${REPO[p.k]}" target="_blank" rel="noopener">GitHub ↗</a>`}<button id="pv">← 이전</button><button id="nx">다음 →</button></div></div>`;
+  $('#xb').onclick=closeCard;$('#pv').onclick=()=>swap(-1);$('#nx').onclick=()=>swap(1);
+  if(!p.about&&has){const fr=$('#card iframe'),src=PROTO[p.k];if(src.startsWith('srcdoc:'))fr.srcdoc=window.SRCDOC[p.k];else fr.src=src}
+  setTimeout(fit,30);playTrack(p.k)}
+function openCard(i,el){if(cardOpen>=0)return;sfxPop();fill(i);const c=$('#card'),L=$('#cardlayer');$('#veil').classList.add('on');L.classList.add('on');c.classList.add('on');
+  const r=el.getBoundingClientRect(),f=c.getBoundingClientRect();
+  $('#veil').onclick=closeCard;
+  if(!RM)c.animate([{transform:`translate(${r.left+r.width/2-(f.left+f.width/2)}px,${r.top+r.height/2-(f.top+f.height/2)}px) scale(${r.width/f.width},${r.height/f.height})`,borderRadius:'10px',opacity:.2},{transform:'none',borderRadius:'22px',opacity:1}],{duration:650,easing:'cubic-bezier(.3,1,.4,1)'});
+  }
+function closeCard(){if(cardOpen<0)return;const c=$('#card');c.classList.remove('on');$('#cardlayer').classList.remove('on');$('#veil').classList.remove('on');cardOpen=-1;c.innerHTML='';}
+function swap(d){const n=(cardOpen+d+P.length)%P.length;const c=$('#card');c.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:`translateX(${-d*40}px)`}],{duration:160}).onfinish=()=>{fill(n);c.animate([{opacity:0,transform:`translateX(${d*40}px)`},{opacity:1,transform:'none'}],{duration:220})}}
+new ResizeObserver(fit).observe($('#card'));
+
+
+/* ---------- onboarding: walk into the light ---------- */
+let scene='onb',p=0,tp=0,slow=false,busy=false,mx=0,my=0;const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+addEventListener('wheel',e=>{if(scene!=='onb'||busy)return;slow=false;tp=cl(tp+e.deltaY*.0006,0,1)},{passive:true});
+let ty=null;addEventListener('touchstart',e=>{ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchmove',e=>{if(scene!=='onb'||busy||ty==null)return;const y=e.touches[0].clientY;slow=false;tp=cl(tp+(ty-y)*.002,0,1);ty=y},{passive:true});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCard();return}if(scene!=='onb'||busy)return;if(e.key==='Enter'||['ArrowUp','ArrowDown',' '].includes(e.key)){e.preventDefault();if(e.key==='Enter'){slow=true;tp=1}else{tp=cl(tp+(e.key==='ArrowDown'?-.06:.06),0,1)}}});
+$('#enter').onclick=()=>{slow=true;tp=1};
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+const layers=$$('#onb .l'),par=[.5,.8,1.2,1.7,2.2,2.6];
+function onbFrame(t){const k=slow?.022:.07;p+=(tp-p)*k;
+  const e=p*p*(3-2*p);$('#world').style.transform=`scale(${1+Math.pow(p,2.3)*7.5})`;
+  layers.forEach((l,i)=>{l.style.transform=`translate(calc(-50% + ${-mx*par[i]*10}px),calc(-50% + ${-my*par[i]*6}px))`});
+  document.querySelector('#onb .floor').style.opacity=1-e;
+  const hue=Math.sin(t*.00006*6)*6;document.querySelector('#onb .h3').style.filter=`blur(56px) hue-rotate(${hue}deg)`;
+  $('#onbtxt').style.opacity=1-cl(p*3,0,1);
+  if(p>.985&&!busy){busy=true;toMain()}
+}
+function toMain(){const f=$('#flash');f.classList.add('on');
+  setTimeout(()=>{$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';const m=$('#main');m.classList.add('on','adjust');$('#again').hidden=false;$('#cap').hidden=false;layout();
+    setTimeout(()=>f.classList.remove('on'),150)},520)}
+$('#again').onclick=()=>{if(maxed)return;const f=$('#flash');f.classList.add('on');setTimeout(()=>{$('#main').classList.remove('on','adjust');$('#again').hidden=true;$('#onb').style.display='';$('#onbtxt').style.display='';$('#onbtxt').style.opacity=1;p=tp=0;slow=false;busy=false;scene='onb';setTimeout(()=>f.classList.remove('on'),100)},520)};
+let maxed=false;
+
+/* ---------- main: photo layout + neon rows ---------- */
+const PH={w:3,h:4,fx:.452,fy:.468};
+function layout(){const vw=innerWidth,vh=innerHeight;let W=Math.max(vw,vh*PH.w/PH.h),H=W*PH.h/PH.w;
+  const tx=cl(vw*.5-PH.fx*W,vw-W,0),ty=cl(vh*.46-PH.fy*H,vh-H,0);
+  const ph=$('#ph');ph.style.width=W+'px';ph.style.height=H+'px';ph.dataset.x=tx;ph.dataset.y=ty;ph.style.transform=`translate(${tx}px,${ty}px)`}
+addEventListener('resize',layout);
+const COL=['#ff3d8b','#18c8f0','#ffb300','#2fe57e','#ff6a2a'];
+const ROWS=[{i:0,t:'24dday',s:'Moving'},{i:1,t:'토닥토닥',s:'Self-care'},{i:2,t:'응답하라 1982',s:'Social'},{i:3,t:'Visit Jeju',s:'Web'},{i:4,t:'About',s:'Contact'}];
+ROWS.forEach((r,k)=>{const b=document.createElement('button');b.className='row';b.style.cssText=`--c:${COL[k]};--d:${(4+Math.random()*4).toFixed(1)}s;--dl:-${(Math.random()*5).toFixed(1)}s`;
+  b.innerHTML=`<span class="n">0${k+1}</span><span class="t">${r.t}<small>${r.s}</small></span>`;b.setAttribute('aria-label',P[r.i].t);
+  b.onmouseenter=b.onfocus=()=>{$('#spill').style.setProperty('--hc',COL[k]);$('#main').classList.add('hov')};
+  b.onclick=()=>openCard(r.i,b);$('#rows').appendChild(b)});
+$('#rows').addEventListener('mouseleave',()=>$('#main').classList.remove('hov'));
+// gentle parallax on the photo
+function mainFrame(){const ph=$('#ph');if(scene==='main'&&ph.dataset.x!==undefined){const x=+ph.dataset.x-mx*14,y=+ph.dataset.y-my*10;ph.style.transform=`translate(${x}px,${y}px)`}}
+(function loop(t){if(scene==='onb')onbFrame(t);else mainFrame();requestAnimationFrame(loop)})(0);
+window.__set=v=>{tp=p=v};window.__main=()=>{busy=true;$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';$('#main').classList.add('on');$('#again').hidden=false;$('#cap').hidden=false;layout()};
+</script>
+</body>
+</html>
