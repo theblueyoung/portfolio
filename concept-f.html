@@ -248,21 +248,20 @@ function target(m,i,sp){const a=i/N*TAU+sp,port=W<H;
   const cw=(port?W*.3:Math.min(W*.19,H*.33))/2.67;return [-R*Math.sin(a)*s*.78,-z*.03,s*cw/CW,(Math.cos(a)+1)/2,1]}
 let prevMode='flat',modeAt=-1e9;
 $$('#modes button').forEach(b=>b.onclick=()=>{if(b.dataset.m!==mode){prevMode=mode;modeAt=performance.now()}mode=b.dataset.m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));showCtr()});
-addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0)return;vel+=e.deltaY*.0018},{passive:true});
+addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0)return;vel+=(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*.004;vel=Math.max(-9,Math.min(9,vel))},{passive:true});
 let burst=null,drag=null,wasDrag=false;
 /* drag anywhere (cards included): the ring follows the pointer directly, in every view */
-function dragDelta(e){const x=e.clientX-W/2,y=e.clientY-H/2,dx=e.clientX-drag.x,port=W<H;let d;
-  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);d=1.5*dx/(cw*1.36*N/TAU)}
-  else if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);d=-1.8*dx/(R*2.08)}
-  else{const a0=Math.atan2(drag.x-W/2,-(drag.y-H/2)),a1=Math.atan2(x,-y);d=a1-a0;if(d>Math.PI)d-=TAU;if(d<-Math.PI)d+=TAU;
-    if(Math.hypot(x,y)<S*.06)d=dx/(S*.36)}          // too close to the centre for an angle: fall back to sideways drag
-  return d}
+function dragDelta(e){const dx=e.clientX-drag.x,port=W<H;           // sideways only: right = cards go right, left = cards go left
+  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);return 1.6*dx/(cw*1.36*N/TAU)}
+  if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);return -1.8*dx/(R*2.08)}
+  return dx/(S*.22)}                                                     // flat & ring: right = clockwise, left = counter-clockwise
 $('#main').addEventListener('pointerdown',e=>{if(e.button!==0||cardOpen>=0||e.target.closest('#modes,#again'))return;
-  drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,moved:false,bg:!e.target.closest('.rc'),t:performance.now(),v:0};wasDrag=false;vel=0});
+  drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,moved:false,bg:!e.target.closest('.rc'),t:performance.now(),v:0,id:e.pointerId};wasDrag=false;vel=0;e.preventDefault()});
+$('#main').addEventListener('dragstart',e=>e.preventDefault());
 addEventListener('pointermove',e=>{if(!drag)return;if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<6)return;
-  if(!drag.moved){drag.moved=true;wasDrag=true;$('#main').style.cursor='grabbing';hovered=-1;hovEl=null;showCtr()}
+  if(!drag.moved){drag.moved=true;wasDrag=true;try{$('#main').setPointerCapture(drag.id)}catch(_){}$('#main').style.cursor='grabbing';hovered=-1;hovEl=null;showCtr()}
   const d=dragDelta(e),now=performance.now(),dt=Math.max(.008,(now-drag.t)/1000);spin+=d;drag.v=drag.v*.6+(d/dt)*.4;drag.x=e.clientX;drag.y=e.clientY;drag.t=now});
-function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<120)?Math.max(-7,Math.min(7,drag.v)):0}
+function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<200)?Math.max(-6,Math.min(6,drag.v*1.2)):0}
   else if(drag.bg&&e)burst={x:e.clientX-W/2,y:e.clientY-H/2};
   drag=null;$('#main').style.cursor='';setTimeout(()=>{wasDrag=false},0)}
 addEventListener('pointerup',endDrag);addEventListener('pointercancel',()=>endDrag(null));
@@ -271,7 +270,7 @@ const SPEED=.12;                                     // idle drift: slow, clockw
 const sv=[];                                         // spring velocities per card
 function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
   const base=drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.35:SPEED));
-  spin+=(base+vel)*dt;vel*=Math.pow(.02,dt);
+  spin+=(base*Math.max(0,1-Math.abs(vel)*2)+vel)*dt;vel*=Math.pow(.3,dt);if(Math.abs(vel)<.01)vel=0;
   const kh=1-Math.pow(1e-9,dt);                      // hover response (2x faster)
   const px=mx*W,py=my*H,PR=S*.27,PS=S*.085,calm=hovered>=0?.25:1;
   cardEls.forEach((el,i)=>{const m=(ms-modeAt<i*26)?prevMode:mode;const T=target(m,i,spin);let c=cur[i];if(!c){c=cur[i]=T.slice()}
