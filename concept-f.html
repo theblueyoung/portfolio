@@ -135,6 +135,38 @@ body.dark #modes,body.dark #hintS,body.dark #count{display:none}
 @media(max-width:800px){#nav{left:auto;right:max(24px,env(safe-area-inset-right,0px));flex-direction:row;gap:14px;align-items:center}#nav .mono{display:none}#nav button{font-size:15px}#nav button[aria-current=page]::before{content:""}#nav button[aria-current=page]{text-decoration:underline;text-underline-offset:4px}
   .pg .hero .num{display:none}.pg .hero{justify-content:center}.pg .hero img{width:60vw}.pgin{padding-top:calc(110px + env(safe-area-inset-top,0px))}}
 
+/* v11: header hierarchy, light pages, pink accent */
+#idxm,#count{display:none!important}
+.logo{font-size:20px;letter-spacing:.08em;line-height:1}
+.logo small{margin-top:8px;font-size:10.5px;letter-spacing:.14em;opacity:.7}
+#nav{left:max(24px,env(safe-area-inset-left,0px));top:calc(104px + env(safe-area-inset-top,0px));gap:2px}
+#nav button{font-size:15px;font-weight:500;letter-spacing:.06em;line-height:1;padding:7px 0}
+#nav button:hover{padding-left:8px}
+#nav button:not([aria-current=page]){opacity:.55}
+#nav button:not([aria-current=page]):hover{opacity:1}
+body.dark .logo,body.dark .logo small,body.dark #nav{color:#111}
+#trans{background:#e9e9e9}
+#tword{font-size:clamp(40px,7vw,104px);color:#ea3a85}
+.pg{background:#e9e9e9;color:#111}
+.pgin{min-height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:3vh;padding:calc(30px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) 34px max(24px,env(safe-area-inset-left,0px))}
+.pg .facts{margin-left:auto;width:min(100%,520px);font-size:clamp(15px,1.55vw,22px);line-height:1.22;letter-spacing:.01em;color:#ea3a85}
+.pg h1{align-self:center;margin-left:min(22vw,300px);font-size:clamp(24px,3.1vw,46px);line-height:1.08;max-width:24ch;color:#ea3a85}
+.pg .cols{margin-top:0;margin-left:min(22vw,300px);grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:24px}
+.pg h2{color:#111a;margin-bottom:12px;font-size:12px}
+.pg ul{font-size:13.5px;line-height:1.5}
+.pg a,.pg ul button{color:#111;font-size:13.5px}
+.pg a:hover,.pg ul button:hover{color:#ea3a85}
+.pg .todo{color:#1118}
+#pg-contact .pgin{grid-template-rows:auto 1fr auto}
+#pg-contact .mono{color:#111a;margin-left:min(22vw,300px);padding-top:6px}
+#pg-contact .mid{align-self:center;margin-left:min(22vw,300px)}
+#pg-contact h1{margin:0;font-size:clamp(30px,4.6vw,70px);max-width:16ch}
+.mailrow{margin-top:4vh;font-size:clamp(18px,2.2vw,32px)}
+#mailcopy{border-color:#111;color:#111;padding:6px 16px;font-size:11px}
+#mailcopy:hover{background:#111;color:#fff}
+@media(max-width:800px){#nav{top:calc(26px + env(safe-area-inset-top,0px));left:auto;gap:14px}#nav button{padding:0}
+  .pgin{padding-top:calc(96px + env(safe-area-inset-top,0px))}.pg h1,.pg .cols,#pg-contact .mono,#pg-contact .mid{margin-left:0}.pg .facts{margin-left:0}}
+
 /* card */
 /* card */
 #cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -170,7 +202,7 @@ body.dark #modes,body.dark #hintS,body.dark #count{display:none}
 </head>
 <body>
 <button class="logo" id="home" aria-label="YOOYOUNG — 메인으로">YOOYOUNG<small>UX · Interaction Designer</small></button>
-<nav id="nav" aria-label="메뉴" hidden><span class="mono">Menu</span><button data-p="work" aria-current="page">Work</button><button data-p="about">About</button><button data-p="contact">Contact</button></nav>
+<nav id="nav" aria-label="메뉴" hidden><button data-p="work" aria-current="page">Work</button><button data-p="about">About</button><button data-p="contact">Contact</button></nav>
 <div id="trans" aria-hidden="true"><b id="tword">ABOUT</b></div>
 
 <section class="pg" id="pg-about" aria-label="About">
@@ -178,7 +210,6 @@ body.dark #modes,body.dark #hintS,body.dark #count{display:none}
     <div class="facts" aria-label="Before design">
       <p>Taekwondo sparring athlete</p><p>Rapper on stage since school</p><p>Got into university on rap</p><p>Seven years a chef in Australia</p><p>Back to school for interaction design</p><p>Into interfaces now…</p>
     </div>
-    <div class="hero"><span class="num" aria-hidden="true">YOO</span><img src="assets/character/line-sit.png" alt="YOOYOUNG, drawn as a line character working on a laptop"><span class="num r" aria-hidden="true">YOUNG</span></div>
     <h1 tabindex="-1">Shaping interfaces with timing, rhythm and systems, and being a good teammate to the people who build them.</h1>
     <div class="cols">
       <div><h2>Capabilities</h2><ul><li>User Research &amp; Planning</li><li>Information Architecture</li><li>Interaction Design</li><li>Prototyping (Figma, HTML/CSS/JS)</li><li>UI &amp; Visual Design</li><li>Inclusive, plain-language design</li></ul></div>
@@ -192,8 +223,8 @@ body.dark #modes,body.dark #hintS,body.dark #count{display:none}
 <section class="pg" id="pg-contact" aria-label="Contact">
   <div class="pgin">
     <p class="mono">For inquiries</p>
-    <h1 tabindex="-1">Let’s make something that moves.</h1>
-    <div class="mailrow"><span id="mailtxt">hello@your-email.com</span><button id="mailcopy">Copy</button></div>
+    <div class="mid"><h1 tabindex="-1">Let’s make something that moves.</h1>
+    <div class="mailrow"><span id="mailtxt">hello@your-email.com</span><button id="mailcopy">Copy</button></div></div>
     <div class="cols">
       <div><h2>Elsewhere</h2><ul><li><a href="https://github.com/theblueyoung" target="_blank" rel="noopener">GitHub ↗</a></li><li class="todo">To be added: LinkedIn, résumé</li></ul></div>
       <div><h2>Open to</h2><ul><li>UX / Interaction design roles</li><li>In-house, agency, overseas</li></ul></div>
@@ -364,21 +395,21 @@ addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0||page!=='work'||idxO
 let burst=null,drag=null,wasDrag=false;
 /* drag anywhere (cards included): the ring follows the pointer directly, in every view */
 function dragDelta(e){const dx=e.clientX-drag.x,port=W<H;           // sideways only: right = cards go right, left = cards go left
-  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);return 1.6*dx/(cw*1.36*N/TAU)}
-  if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);return -1.8*dx/(R*2.08)}
-  return dx/(S*.22)}                                                     // flat & ring: right = clockwise, left = counter-clockwise
+  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);return .8*dx/(cw*1.36*N/TAU)}
+  if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);return -.9*dx/(R*2.08)}
+  return dx/(S*.44)}                                                     // flat & ring: right = clockwise, left = counter-clockwise
 $('#main').addEventListener('pointerdown',e=>{if(e.button!==0||cardOpen>=0||e.target.closest('#modes,#again'))return;
   drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,moved:false,bg:!e.target.closest('.rc'),t:performance.now(),v:0,id:e.pointerId};wasDrag=false;vel=0;e.preventDefault()});
 $('#main').addEventListener('dragstart',e=>e.preventDefault());
 addEventListener('pointermove',e=>{if(!drag)return;if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<6)return;
   if(!drag.moved){drag.moved=true;wasDrag=true;try{$('#main').setPointerCapture(drag.id)}catch(_){}$('#main').style.cursor='grabbing';hovered=-1;hovEl=null;showCtr()}
   const d=dragDelta(e),now=performance.now(),dt=Math.max(.008,(now-drag.t)/1000);spin+=d;drag.v=drag.v*.6+(d/dt)*.4;drag.x=e.clientX;drag.y=e.clientY;drag.t=now});
-function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<200)?Math.max(-6,Math.min(6,drag.v*1.2)):0}
+function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<200)?Math.max(-2.5,Math.min(2.5,drag.v)):0}
   else if(drag.bg&&e)burst={x:e.clientX-W/2,y:e.clientY-H/2};
   drag=null;$('#main').style.cursor='';setTimeout(()=>{wasDrag=false},0)}
 addEventListener('pointerup',endDrag);addEventListener('pointercancel',()=>endDrag(null));
 addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key==='ArrowRight')vel+=.3;if(e.key==='ArrowLeft')vel-=.3});
-const SPEED=.085;                                     // idle drift: slow, clockwise, never stops
+const SPEED=.17;                                     // idle drift: slow, clockwise, never stops
 const sv=[];                                         // spring velocities per card
 function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
   const base=RM||idxOpen||drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.12:SPEED));if(RM&&!(drag&&drag.moved))vel=0;
