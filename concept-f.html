@@ -43,7 +43,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ============ 2. main: a slowly turning ring of works (Flat / Tilt / Ring / Gallery) ============ */
 #main{z-index:5;background:radial-gradient(ellipse at 50% 45%,#f4f4f4 0,#e9e9e9 70%,#dedede 100%);visibility:hidden;opacity:0;overflow:hidden;color:#111;touch-action:none;user-select:none}
-#main.on{visibility:visible;opacity:1}
+#main.on{visibility:visible;opacity:1;cursor:grab}
 #main.adjust #stagewrap{animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rise{from{opacity:0;transform:scale(.92)}}
 #stagewrap{position:absolute;inset:0}
@@ -126,7 +126,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div id="stagewrap"><div id="ring"></div></div>
   <div id="ctr" aria-live="polite"></div>
   <div id="modes" role="group" aria-label="보기 방식"><button data-m="flat" aria-pressed="true">Flat</button><button data-m="tilt" aria-pressed="false">Tilt</button><button data-m="ring" aria-pressed="false">Ring</button><button data-m="gallery" aria-pressed="false">Gallery</button></div>
-  <div id="lbl">Selected Works</div><div id="hintS">Scroll · drag · click the space</div><div id="count">01 — 08</div>
+  <div id="lbl">Selected Works</div><div id="hintS">Drag to spin · scroll · click the space</div><div id="count">01 — 08</div>
 </section>
 <div id="cap" class="mono" hidden></div>
 <button id="again" class="mono" hidden>↺ 처음 빛으로</button>
@@ -220,12 +220,12 @@ let S=700,W=1200,H=800,CW=70,CH=90,mode='flat',spin=0,vel=0,hovered=-1,hovEl=nul
 const cur=[],tiltv=[];
 ITEMS.concat(ITEMS).forEach((it,i)=>{const el=document.createElement(it?'button':'div');el.className='rc'+(it?(P[it.pi].about?' about':''):' empty');
   tiltv.push({rx:0,ry:0,trx:0,try_:0,h:0});
-  const enter=()=>{hovered=i%UNIQ;hovEl=i;showCtr()},leave=()=>{if(hovEl===i){hovered=-1;hovEl=null;showCtr()}tiltv[i].trx=tiltv[i].try_=0};
+  const enter=()=>{if(drag&&drag.moved)return;hovered=i%UNIQ;hovEl=i;showCtr()},leave=()=>{if(hovEl===i){hovered=-1;hovEl=null;showCtr()}tiltv[i].trx=tiltv[i].try_=0};
   el.addEventListener('pointerenter',enter);el.addEventListener('pointerleave',leave);
   el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();tiltv[i].try_=((e.clientX-r.left)/r.width-.5)*26;tiltv[i].trx=-((e.clientY-r.top)/r.height-.5)*22});
   if(it){const p=P[it.pi];el.setAttribute('aria-label',p.t);el.innerHTML=p.about?'<span class="ab">유영</span>':`<img src="${COVERS[p.k]}" alt="">`;
     el.addEventListener('focus',enter);el.addEventListener('blur',leave);
-    el.onclick=()=>{if(opening||cardOpen>=0)return;opening=true;   // the picked card rises first, then opens
+    el.onclick=()=>{if(opening||cardOpen>=0||wasDrag)return;opening=true;   // the picked card rises first, then opens
       const a=el.animate([{translate:'0 0',scale:'1'},{translate:'0 -46px',scale:'1.22'}],{duration:170,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
       a.onfinish=()=>{openCard(it.pi,el);setTimeout(()=>{a.cancel();opening=false},700)}}}
   else el.innerHTML='<span class="pl">+</span>';
@@ -249,15 +249,28 @@ function target(m,i,sp){const a=i/N*TAU+sp,port=W<H;
 let prevMode='flat',modeAt=-1e9;
 $$('#modes button').forEach(b=>b.onclick=()=>{if(b.dataset.m!==mode){prevMode=mode;modeAt=performance.now()}mode=b.dataset.m;$$('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));showCtr()});
 addEventListener('wheel',e=>{if(scene!=='main'||cardOpen>=0)return;vel+=e.deltaY*.0018},{passive:true});
-$('#main').addEventListener('pointerdown',e=>{if(e.target.closest('.rc,#modes,#again'))return;dragX=e.clientX;burst={x:e.clientX-W/2,y:e.clientY-H/2}});
-let burst=null;
-addEventListener('pointermove',e=>{if(dragX==null)return;vel+=(e.clientX-dragX)*.0032;dragX=e.clientX});
-addEventListener('pointerup',()=>{dragX=null});
+let burst=null,drag=null,wasDrag=false;
+/* drag anywhere (cards included): the ring follows the pointer directly, in every view */
+function dragDelta(e){const x=e.clientX-W/2,y=e.clientY-H/2,dx=e.clientX-drag.x,port=W<H;let d;
+  if(mode==='tilt'){const cw=port?W*.34:Math.min(W*.17,H*.3);d=1.5*dx/(cw*1.36*N/TAU)}
+  else if(mode==='gallery'){const R=port?W*.6:Math.min(W*.5,H*.8);d=-1.8*dx/(R*2.08)}
+  else{const a0=Math.atan2(drag.x-W/2,-(drag.y-H/2)),a1=Math.atan2(x,-y);d=a1-a0;if(d>Math.PI)d-=TAU;if(d<-Math.PI)d+=TAU;
+    if(Math.hypot(x,y)<S*.06)d=dx/(S*.36)}          // too close to the centre for an angle: fall back to sideways drag
+  return d}
+$('#main').addEventListener('pointerdown',e=>{if(e.button!==0||cardOpen>=0||e.target.closest('#modes,#again'))return;
+  drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,moved:false,bg:!e.target.closest('.rc'),t:performance.now(),v:0};wasDrag=false;vel=0});
+addEventListener('pointermove',e=>{if(!drag)return;if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<6)return;
+  if(!drag.moved){drag.moved=true;wasDrag=true;$('#main').style.cursor='grabbing';hovered=-1;hovEl=null;showCtr()}
+  const d=dragDelta(e),now=performance.now(),dt=Math.max(.008,(now-drag.t)/1000);spin+=d;drag.v=drag.v*.6+(d/dt)*.4;drag.x=e.clientX;drag.y=e.clientY;drag.t=now});
+function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t<120)?Math.max(-7,Math.min(7,drag.v)):0}
+  else if(drag.bg&&e)burst={x:e.clientX-W/2,y:e.clientY-H/2};
+  drag=null;$('#main').style.cursor='';setTimeout(()=>{wasDrag=false},0)}
+addEventListener('pointerup',endDrag);addEventListener('pointercancel',()=>endDrag(null));
 addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key==='ArrowRight')vel+=.3;if(e.key==='ArrowLeft')vel-=.3});
-const SPEED=.06;                                     // idle drift: slow, clockwise, never stops
+const SPEED=.12;                                     // idle drift: slow, clockwise, never stops
 const sv=[];                                         // spring velocities per card
 function mainFrame(ms){const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
-  const base=cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.35:SPEED);
+  const base=drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.35:SPEED));
   spin+=(base+vel)*dt;vel*=Math.pow(.02,dt);
   const kh=1-Math.pow(1e-9,dt);                      // hover response (2x faster)
   const px=mx*W,py=my*H,PR=S*.27,PS=S*.085,calm=hovered>=0?.25:1;
