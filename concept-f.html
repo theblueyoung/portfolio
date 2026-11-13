@@ -167,6 +167,32 @@ body.dark .logo,body.dark .logo small,body.dark #nav{color:#111}
 @media(max-width:800px){#nav{top:calc(26px + env(safe-area-inset-top,0px));left:auto;gap:14px}#nav button{padding:0}
   .pgin{padding-top:calc(96px + env(safe-area-inset-top,0px))}.pg h1,.pg .cols,#pg-contact .mono,#pg-contact .mid{margin-left:0}.pg .facts{margin-left:0}}
 
+/* v13: Pretendard everywhere, contact popup */
+@font-face{font-family:'Pretendard';font-weight:300;font-display:swap;src:url(assets/fonts/Pretendard-Light.subset.woff2) format('woff2')}
+@font-face{font-family:'Pretendard';font-weight:400;font-display:swap;src:url(assets/fonts/Pretendard-Regular.subset.woff2) format('woff2')}
+@font-face{font-family:'Pretendard';font-weight:500;font-display:swap;src:url(assets/fonts/Pretendard-Medium.subset.woff2) format('woff2')}
+@font-face{font-family:'Pretendard';font-weight:700;font-display:swap;src:url(assets/fonts/Pretendard-Bold.subset.woff2) format('woff2')}
+:root{--disp:'Pretendard',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;--sans:var(--disp);--mono:var(--disp);--neon:var(--disp)}
+html,body,button,input{font-family:var(--disp)}
+#tword{font-family:var(--disp);font-weight:700;letter-spacing:-.02em}
+.mono{letter-spacing:.08em}
+#nav[hidden]{display:none}
+#onb{cursor:pointer}
+#ctveil{position:fixed;inset:0;z-index:58;background:#0000;visibility:hidden;transition:background .25s,visibility .25s}
+#ctveil.on{background:#00000026;visibility:visible}
+#ct{position:fixed;left:50%;top:50%;z-index:59;width:min(540px,92vw);background:#161616;color:#fff;padding:clamp(26px,4vw,44px);box-shadow:0 30px 80px #0006;
+  transform:translate(-50%,-44%) rotate(-1.2deg) scale(.96);opacity:0;visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s,visibility .28s}
+#ct.on{transform:translate(-50%,-50%) rotate(-1.2deg);opacity:1;visibility:visible}
+#ct h2{font-weight:500;font-size:clamp(26px,3.4vw,36px);letter-spacing:-.01em;text-transform:uppercase;margin-bottom:clamp(22px,3.5vw,36px)}
+.ctg{display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,3.4vw,34px) 24px}
+#ct h3{font-weight:400;font-size:13px;color:#ffffff80;margin-bottom:6px}
+#ct a{display:block;width:fit-content;color:#fff;font-size:15px;line-height:1.5;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:text-decoration-color .15s}
+#ct a:hover,#ct a:focus-visible{text-decoration-color:#fff}
+#ctx{display:block;margin:clamp(22px,3.4vw,34px) 0 0 auto;color:#fff;font-size:14px;padding:6px 0 6px 10px}
+#ctx:hover{text-decoration:underline;text-underline-offset:4px}
+#ct :focus-visible{outline:2px solid #fff;outline-offset:4px}
+@media(max-width:520px){.ctg{grid-template-columns:1fr}}
+
 /* card */
 /* card */
 #cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -240,7 +266,7 @@ body.dark .logo,body.dark .logo small,body.dark #nav{color:#111}
   </div>
   <div class="floor"></div><div class="grainv"></div>
 </section>
-<div id="onbtxt"><p>스크롤하거나 Enter를 눌러, 빛 속으로 걸어 들어가세요</p><button id="enter">Enter ↵</button></div>
+<div id="onbtxt"><p>Press Enter or click to step into the light</p><button id="enter">Enter ↵</button></div>
 <div id="flash"></div>
 
 <!-- 2. main -->
@@ -255,6 +281,17 @@ body.dark .logo,body.dark .logo small,body.dark #nav{color:#111}
 <div id="cap" class="mono" hidden></div>
 <button id="again" class="mono" hidden>↺ 처음 빛으로</button>
 
+<div id="ctveil"></div>
+<aside id="ct" role="dialog" aria-modal="true" aria-labelledby="cth">
+  <h2 id="cth">Come say hi</h2>
+  <div class="ctg">
+    <div><h3>Drop me a line</h3><a href="mailto:hello@your-email.com">hello@your-email.com</a></div>
+    <div><h3>Code &amp; prototypes</h3><a href="https://github.com/theblueyoung" target="_blank" rel="noopener">GitHub</a></div>
+    <div><h3>Work &amp; career</h3><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></div>
+    <div><h3>Life lately</h3><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a></div>
+  </div>
+  <button id="ctx">Close <span aria-hidden="true">✕</span></button>
+</aside>
 <div id="veil"></div>
 <div id="cardlayer"><article class="card" id="card" aria-modal="true" role="dialog"></article></div>
 
@@ -319,14 +356,15 @@ openCard=function(i,el){if(cardOpen<0)lastFocus=document.activeElement;_open(i,e
 closeCard=function(){const was=cardOpen>=0;_close();if(was&&lastFocus&&lastFocus.focus){try{lastFocus.focus({preventScroll:true})}catch(_){}}};
 /* ---------- onboarding: walk into the light ---------- */
 let scene='onb',p=0,tp=0,slow=false,busy=false,mx=0,my=0;const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
-addEventListener('wheel',e=>{if(scene!=='onb'||busy)return;slow=false;tp=cl(tp+e.deltaY*.0006,0,1)},{passive:true});
+
 let ty=null;addEventListener('touchstart',e=>{ty=e.touches[0].clientY},{passive:true});
-addEventListener('touchmove',e=>{if(scene!=='onb'||busy||ty==null)return;const y=e.touches[0].clientY;slow=false;tp=cl(tp+(ty-y)*.002,0,1);ty=y},{passive:true});
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeCard();return}if(scene!=='onb'||busy)return;if(e.key==='Enter'||['ArrowUp','ArrowDown',' '].includes(e.key)){e.preventDefault();if(e.key==='Enter'){slow=true;tp=1}else{tp=cl(tp+(e.key==='ArrowDown'?-.06:.06),0,1)}}});
+addEventListener('touchmove',e=>{if(scene!=='onb'||busy||ty==null)return;const y=e.touches[0].clientY;ty=y},{passive:true});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeCard();return}if(scene!=='onb'||busy)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();slow=true;tp=1}});
+$('#onb').addEventListener('click',()=>{if(scene==='onb'&&!busy){slow=true;tp=1}});
 $('#enter').onclick=()=>{slow=true;tp=1};
 addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
 const layers=$$('#onb .l'),par=[.5,.8,1.2,1.7,2.2,2.6];
-function onbFrame(t){const k=slow?.022:.07;p+=(tp-p)*k;
+function onbFrame(t){const dtO=Math.min(.1,(t-(onbFrame.l||t))/1000);onbFrame.l=t;const k=1-Math.exp(-dtO*2.4);p+=(tp-p)*k;
   const e=p*p*(3-2*p);$('#world').style.transform=`scale(${1+Math.pow(p,2.3)*7.5})`;
   layers.forEach((l,i)=>{l.style.transform=`translate(calc(-50% + ${-mx*par[i]*10}px),calc(-50% + ${-my*par[i]*6}px))`});
   document.querySelector('#onb .floor').style.opacity=1-e;
@@ -409,7 +447,7 @@ function endDrag(e){if(!drag)return;if(drag.moved){vel=(performance.now()-drag.t
   drag=null;$('#main').style.cursor='';setTimeout(()=>{wasDrag=false},0)}
 addEventListener('pointerup',endDrag);addEventListener('pointercancel',()=>endDrag(null));
 addEventListener('keydown',e=>{if(scene!=='main'||cardOpen>=0)return;if(e.key==='ArrowRight')vel+=.3;if(e.key==='ArrowLeft')vel-=.3});
-const SPEEDS={flat:.15,tilt:.105,ring:.17,gallery:.105};                                     // idle drift: slow, clockwise, never stops
+const SPEEDS={flat:.12,tilt:.042,ring:.17,gallery:.042};                                     // idle drift: slow, clockwise, never stops
 const sv=[];                                         // spring velocities per card
 function mainFrame(ms){const SPEED=SPEEDS[mode]||.15,heavy=mode==='tilt'||mode==='gallery';const dt=Math.min(.05,(ms-lastT)/1000||0);lastT=ms;const tt=ms*.001;
   const base=RM||idxOpen||drag&&drag.moved?0:(cardOpen>=0?SPEED*.2:(hovered>=0?SPEED*.12:SPEED));if(RM&&!(drag&&drag.moved))vel=0;
@@ -446,10 +484,15 @@ let page='work',navBusy=false;
 function applyPage(n){page=n;document.body.classList.toggle('dark',n!=='work');$('#pg-about').classList.toggle('on',n==='about');$('#pg-contact').classList.toggle('on',n==='contact');
   $$('#nav button').forEach(b=>{if(b.dataset.p===n)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   const pg=n==='work'?null:$('#pg-'+n);if(pg){pg.scrollTop=0;const h=pg.querySelector('h1');h&&h.focus({preventScroll:true})}}
-function navigate(n){if(navBusy||scene!=='main')return;if(cardOpen>=0)closeCard();if(idxOpen)setIndex(false);if(n===page)return;
+function navigate(n){if(navBusy||scene!=='main')return;if(ctOpen)setContact(false);if(cardOpen>=0)closeCard();if(idxOpen)setIndex(false);if(n===page)return;
   if(RM){applyPage(n);return}navBusy=true;const tr=$('#trans');$('#tword').textContent=n.toUpperCase();tr.classList.add('on');
   setTimeout(()=>applyPage(n),420);setTimeout(()=>{tr.classList.remove('on');navBusy=false},950)}
-$$('#nav button').forEach(b=>b.onclick=()=>navigate(b.dataset.p));
+$$('#nav button').forEach(b=>b.onclick=()=>{if(b.dataset.p==='contact')setContact(true);else navigate(b.dataset.p)});
+let ctOpen=false,ctFrom=null;
+function setContact(v){if(v===ctOpen)return;ctOpen=v;$('#ctveil').classList.toggle('on',v);$('#ct').classList.toggle('on',v);
+  if(v){ctFrom=document.activeElement;setTimeout(()=>$('#ctx').focus(),60)}else if(ctFrom&&ctFrom.focus){try{ctFrom.focus({preventScroll:true})}catch(_){}}}
+$('#ctx').onclick=()=>setContact(false);$('#ctveil').onclick=()=>setContact(false);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&ctOpen)setContact(false)});
 $('#home').onclick=()=>navigate('work');
 ITEMS.forEach(it=>{if(!it)return;const li=document.createElement('li');li.innerHTML=`<button>${it.n}</button>`;li.firstChild.onclick=()=>{const b=li.firstChild;openCard(it.pi,b)};$('#abworks').appendChild(li)});
 $('#mailcopy').onclick=async()=>{const b=$('#mailcopy');try{await navigator.clipboard.writeText($('#mailtxt').textContent);b.textContent='Copied'}catch(_){const r=document.createRange();r.selectNodeContents($('#mailtxt'));getSelection().removeAllRanges();getSelection().addRange(r);b.textContent='Selected'}setTimeout(()=>b.textContent='Copy',1600)};

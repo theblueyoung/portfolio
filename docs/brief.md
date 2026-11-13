@@ -168,3 +168,9 @@ UX/UI 디자이너 채용. 형식은 뮤직비디오, 내용은 UX/UI 역량.
 ## 컨셉 F 메인 v12 (2026-11-13)
 - 보기별 회전 속도: Flat 0.17 → 0.15(아주 조금 느리게), Tilt·Gallery 0.17 → 0.105, Ring 0.17 유지.
 - Tilt·Gallery 드래그: 민감도 약 40% 감소, 놓은 뒤 관성 크게 축소, 카드 스프링을 더 무겁게(덜 출렁이고 덜 기울어짐).
+
+## 컨셉 F v13 (2026-11-13)
+- 온보딩: 메뉴 숨김(숨김 속성이 CSS에 덮여 보이던 버그 수정). 들어가기는 Enter/Space 또는 화면 클릭만, 스크롤 입력 제거. 들어가는 속도를 시간 기준으로 고정.
+- 회전: Flat 0.15 → 0.12(-20%), Tilt·Gallery 0.105 → 0.042(-60%), Ring 0.17 유지.
+- Contact: 별도 페이지 대신 팝업(검은 카드, 살짝 기울임, Come say hi, 링크 묶음, Close, Esc/바깥 클릭으로 닫기). 링크에 마우스를 올리면 밑줄. 주소는 자리표시자: 이메일 hello@your-email.com, LinkedIn·Instagram은 사이트 첫 화면, GitHub만 실제(theblueyoung).
+- 글꼴: 전부 Pretendard(Light/Regular/Medium/Bold 서브셋, assets/fonts, SIL OFL). 단독 파일과 링크 버전에는 글꼴을 파일 안에 포함(약 2MB).
