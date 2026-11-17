@@ -229,6 +229,9 @@ html,body,button,input{font-family:var(--disp)}
 #modes button:hover{opacity:1}
 #modes button[aria-pressed=true]{opacity:1;text-decoration-color:var(--pk)}
 
+#pg-about .pgin{grid-template-rows:1fr auto}
+#pg-about h1{align-self:center}
+
 /* card */
 /* card */
 #cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -269,15 +272,12 @@ html,body,button,input{font-family:var(--disp)}
 
 <section class="pg" id="pg-about" aria-label="About">
   <div class="pgin">
-    <div class="facts" aria-label="이렇게 일해요">
-      <p>글보다 그림으로 먼저 설명해요</p><p>한 화면에는 한 가지 행동만</p><p>어려운 말은 쉬운 말로 바꿔요</p><p>실수해도 혼나지 않는 설계</p><p>누구도 빠지지 않는 화면</p><p>직접 만들고, 직접 눌러 봐요</p>
-    </div>
     <h1 tabindex="-1">복잡한 과정을<br>한눈에 보이는 흐름으로.<br><span class="soft">사람이 멈칫하는 순간을 찾아, 다음 행동이 자연스러워지게 만듭니다.</span></h1>
     <div class="cols">
-      <div><h2>할 수 있는 일</h2><ul><li>사용자 리서치 · 기획</li><li>정보 구조 설계 (IA)</li><li>인터랙션 디자인</li><li>프로토타이핑 (Figma, HTML/CSS/JS)</li><li>UI · 비주얼 디자인</li><li>누구나 쓰기 쉬운 디자인</li></ul></div>
-      <div><h2>작업</h2><ul id="abworks"></ul></div>
-      <div><h2>작업 방식</h2><ul><li>01 문제를 한 문장으로 정의</li><li>02 국내외 서비스 리서치</li><li>03 사용자 흐름과 정보 구조</li><li>04 직접 코드로 만든 프로토타입</li><li>05 눌러 보고, 다시 고치기</li></ul></div>
-      <div><h2>학력 · 경력</h2><ul><li class="todo">추가 예정 (학교, 기간, 역할)</li></ul></div>
+      <div><h2>Capabilities</h2><ul><li>UX Research &amp; Planning</li><li>Information Architecture</li><li>Interaction Design</li><li>Prototyping (Figma, HTML/CSS/JS)</li><li>UI &amp; Visual Design</li><li>Accessible Design</li></ul></div>
+      <div><h2>Works</h2><ul id="abworks"></ul></div>
+      <div><h2>Focus</h2><ul><li>Research that fits the real user</li><li>Apps for older adults</li><li>Design for every ability</li><li>Plain words, clear steps</li></ul></div>
+      <div><h2>Education &amp; Experience</h2><ul><li class="todo">To be added</li></ul></div>
     </div>
   </div>
 </section>

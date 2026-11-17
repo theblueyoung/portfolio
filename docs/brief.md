@@ -186,3 +186,7 @@ UX/UI 디자이너 채용. 형식은 뮤직비디오, 내용은 UX/UI 역량.
 - About: 핑크 글자 한글화, 태권도·랩·요리·호주 이력 전부 삭제. UX 성향 문장(그림으로 먼저/한 화면 한 행동/쉬운 말/실수해도 괜찮은 설계/누구도 빠지지 않는 화면/직접 만들고 눌러 봄) — 24dday·토닥토닥 기획 문서의 원칙에서 가져옴. 큰 문장: "복잡한 과정을 한눈에 보이는 흐름으로." 아래 열 한글화(할 수 있는 일/작업/작업 방식/학력·경력). "Before UX"는 "작업 방식"으로 교체.
 - 보기 선택(Flat/Tilt/Ring/Gallery): 둥근 버튼 제거, 선택된 것만 밑줄.
 - 작업 추가: MODUL 모듈(theblueyoung/figma, 모바일 화면으로 표시, 단독 파일에서도 눌러볼 수 있음), K-POP(theblueyoung/usyd_K-pop, Plotly 데이터 스토리). 원 위 8칸 중 6칸 프로젝트 + 임시 그림 2칸. 두 프로젝트의 역할·과정·결과는 확인 필요.
+
+## 컨셉 F v16 (2026-11-17)
+- About: 오른쪽 위 작은 원칙 목록 삭제(큰 문장과 역할이 겹침). 아래 열 제목 영어로(Capabilities / Works / Focus / Education & Experience), Capabilities 목록 영어로("누구나 쓰기 쉬운 디자인" → Accessible Design).
+- "작업 방식" → Focus: Research that fits the real user / Apps for older adults / Design for every ability / Plain words, clear steps. (유영님: UX 리서치로 타깃 유저에 꼭 맞는 설계를 좋아함, 노인과 여러 이유로 사용이 어려운 사람을 돕는 앱에 관심)
