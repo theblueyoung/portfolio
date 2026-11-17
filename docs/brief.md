@@ -191,3 +191,8 @@ UX/UI 디자이너 채용. 형식은 뮤직비디오, 내용은 UX/UI 역량.
 - About: 오른쪽 위 작은 원칙 목록 삭제(큰 문장과 역할이 겹침). 아래 열 제목 영어로(Capabilities / Works / Focus / Education & Experience), Capabilities 목록 영어로("누구나 쓰기 쉬운 디자인" → Accessible Design).
 - "작업 방식" → Focus: Research that fits the real user / Apps for older adults / Design for every ability / Plain words, clear steps. (유영님: UX 리서치로 타깃 유저에 꼭 맞는 설계를 좋아함, 노인과 여러 이유로 사용이 어려운 사람을 돕는 앱에 관심)
 - v16.1: Focus에서 "Apps for older adults" 삭제. 유영님 의도: 특정 연령을 내세우지 않고, 접근성을 기본으로 고려하며 모든 사용자를 포괄하는 디자이너. → Accessibility from the first sketch / Inclusive design for every user.
+
+## 컨셉 F v17 (2026-11-17)
+- 보기 선택 버튼 다시 둥근 알약형으로(검정+핑크 테마).
+- K-POP을 웹사이트로 표시: 표지를 데스크톱 화면으로, 상세 카드에서 휴대폰 틀 대신 가로형 화면 틀(16:10). 분류 "Website · Data storytelling".
+- 능력단위 평가 답안작성지(HWP) 작성: 학원 서식 원본에 최종 사이트 기준 답을 채움(그림 4장 포함). 파일은 개인 문서라 저장소에 올리지 않음.

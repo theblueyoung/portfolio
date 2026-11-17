@@ -223,14 +223,12 @@ html,body,button,input{font-family:var(--disp)}
 #ct,#ct.on{transform:translate(-50%,-50%)}
 #ct{transform:translate(-50%,-46%) scale(.97)}
 #ct.on{transform:translate(-50%,-50%)}
-#modes{gap:clamp(14px,2vw,26px);align-items:center}
-#modes button,#modes button:hover,#modes button[aria-pressed=true]{background:none;border:0;border-radius:0;padding:6px 0;color:var(--pk)}
-#modes button{opacity:.55;text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:1.5px;text-underline-offset:7px;transition:opacity .2s,text-decoration-color .2s;font-size:15px;letter-spacing:.02em}
-#modes button:hover{opacity:1}
-#modes button[aria-pressed=true]{opacity:1;text-decoration-color:var(--pk)}
 
 #pg-about .pgin{grid-template-rows:1fr auto}
 #pg-about h1{align-self:center}
+
+.phw.web{aspect-ratio:16/10;height:auto;width:100%;max-height:none;border-radius:10px;box-shadow:0 0 0 5px #111,0 24px 50px #0005}
+.phw.web img{width:100%!important;height:100%!important;transform:none!important}
 
 /* card */
 /* card */
@@ -364,7 +362,7 @@ const P=[
    ['Design','"덜어낼수록" 드러나는 가구라는 브랜드에 맞춰, 큰 사진과 짧은 문장, 넉넉한 여백으로 구성했어요.'],
    ['Parts','메인 · 회사소개 · 대표 컬렉션 · 공지사항 · 관리자(Admin)'],
    ['Note','역할과 과정, 결과는 유영님 확인 후 채울 예정이에요.']]},
- {k:'kpop',c:'#ff4fc0',lab:'K-POP',cat:'Data storytelling · Web',t:'K-POP & Social Media',one:'소셜 미디어가 K-POP의 세계화에 준 영향을 데이터로 풀어낸 웹페이지',
+ {k:'kpop',web:1,c:'#ff4fc0',lab:'K-POP',cat:'Website · Data storytelling',t:'K-POP & Social Media',one:'소셜 미디어가 K-POP의 세계화에 준 영향을 데이터로 풀어낸 웹페이지',
   rows:[['Overview','유튜브 검색 추이, 빌보드 순위, 소셜 미디어 언급량 같은 공개 데이터를 모아 K-POP이 어떻게 퍼졌는지 차트 5개로 보여줘요.'],
    ['Build','CSV 데이터를 Plotly 차트로 그리고, 화면 크기에 맞춰 차트가 반응하도록 만들었어요.'],
    ['Note','역할과 과정, 결과는 유영님 확인 후 채울 예정이에요.']]},
@@ -376,10 +374,10 @@ const P=[
 
 const playTrack=()=>{},sfxPop=()=>{};let cardOpen=-1;
 /* ---------------- card ---------------- */
-function fit(){const w=$('#card .phw');if(!w)return;const s=w.clientWidth/390;$$('#card .phw iframe,#card .phw img').forEach(e=>e.style.transform=`scale(${s})`);const fr=$('#card iframe');if(fr)fr.style.height=(w.clientHeight/s)+'px'}
+function fit(){const w=$('#card .phw');if(!w||w.classList.contains('web'))return;const s=w.clientWidth/390;$$('#card .phw iframe,#card .phw img').forEach(e=>e.style.transform=`scale(${s})`);const fr=$('#card iframe');if(fr)fr.style.height=(w.clientHeight/s)+'px'}
 function fill(i){const p=P[i],has=!!PROTO[p.k],c=$('#card');cardOpen=i;
   const left=p.about?`<div class="cl2" style="--c:${p.c}"><span style="font-family:var(--disp);font-weight:700;font-size:clamp(70px,12vw,130px);color:#fff;letter-spacing:-.04em">유영</span></div>`
-    :`<div class="cl2" style="--c:${p.c}"><div class="phw">${has?`<iframe title="${p.t} 프로토타입" loading="lazy"></iframe>`:`<img src="${COVERS[p.k]}" alt="${p.t} 화면">`}</div></div>`;
+    :`<div class="cl2" style="--c:${p.c}"><div class="phw${p.web?' web':''}">${has&&!p.web?`<iframe title="${p.t} 프로토타입" loading="lazy"></iframe>`:`<img src="${COVERS[p.k]}" alt="${p.t} 화면">`}</div></div>`;
   c.innerHTML=`<button class="xb" id="xb" aria-label="닫기">✕</button>${left}<div class="cr"><div class="c">${p.cat}${!p.about&&!has?' · 화면 캡처':''}</div><h2>${p.t}</h2><div class="o">${p.one}</div><dl>${p.rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}</dl>
     <div class="btns">${p.about?'':`<a href="https://github.com/theblueyoung/${REPO[p.k]}" target="_blank" rel="noopener">GitHub ↗</a>`}<button id="pv">← 이전</button><button id="nx">다음 →</button></div></div>`;
   $('#xb').onclick=closeCard;$('#pv').onclick=()=>swap(-1);$('#nx').onclick=()=>swap(1);
@@ -425,7 +423,7 @@ let maxed=false;
 
 /* ---------- main: the turning ring (Flat / Tilt / Ring / Gallery) ---------- */
 const N=16,UNIQ=8,TAU=Math.PI*2;
-const ITEMS=[{pi:0,n:'24dday',s:'Moving · App'},{pi:1,n:'토닥토닥',s:'Self-care · App'},{pi:2,n:'응답하라 1982',s:'Social · App'},{pi:4,n:'MODUL 모듈',s:'Website · App view'},{pi:3,n:'Visit Jeju',s:'Web · School'},{pi:5,n:'K-POP',s:'Data story · Web'},null,null];
+const ITEMS=[{pi:0,n:'24dday',s:'Moving · App'},{pi:1,n:'토닥토닥',s:'Self-care · App'},{pi:2,n:'응답하라 1982',s:'Social · App'},{pi:4,n:'MODUL 모듈',s:'Website · App view'},{pi:3,n:'Visit Jeju',s:'Web · School'},{pi:5,n:'K-POP',s:'Website · Data story'},null,null];
 /* temporary artworks for the slots that have no project yet (drawn in code, replace with real projects later) */
 const ART=(()=>{const mk=f=>{const c=document.createElement('canvas');c.width=300;c.height=390;const x=c.getContext('2d');f(x,300,390);return c.toDataURL('image/jpeg',.86)};
   const g=(x,x0,y0,x1,y1,st)=>{const q=x.createLinearGradient(x0,y0,x1,y1);st.forEach(([o,k])=>q.addColorStop(o,k));return q};
