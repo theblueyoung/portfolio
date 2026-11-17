@@ -38,13 +38,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #enter{pointer-events:auto;margin-top:12px;padding:12px 28px;border:1px solid #ffffffcc;border-radius:99px;background:#ffffff1c;backdrop-filter:blur(8px);font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;transition:background .25s,color .25s}
 #enter:hover{background:#fff;color:#2a8fcf}
 #onbtxt p{font-weight:300;color:#ffffffd9;text-shadow:0 0 14px #1a6fb888;font-size:14px}
-#flash{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 49%,#fff,#ffd3e8 55%,#ff9fc8);transition:opacity .45s}
+#flash{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 49%,#fff,#ffd3e8 55%,#ff9fc8);transition:opacity .25s}
 #flash.on{opacity:1}
 
 /* ============ 2. main: a slowly turning ring of works (Flat / Tilt / Ring / Gallery) ============ */
 #main{z-index:5;background:radial-gradient(ellipse at 50% 45%,#f4f4f4 0,#e9e9e9 70%,#dedede 100%);visibility:hidden;opacity:0;overflow:hidden;color:#111;touch-action:none;user-select:none}
 #main.on{visibility:visible;opacity:1;cursor:grab}
-#main.adjust #stagewrap{animation:rise 1.4s cubic-bezier(.2,.8,.2,1) both}
+#main.adjust #stagewrap{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rise{from{opacity:0;transform:scale(.92)}}
 #stagewrap{position:absolute;inset:0}
 #ring{position:absolute;left:50%;top:50%;width:0;height:0;z-index:1;isolation:isolate}
@@ -193,6 +193,28 @@ html,body,button,input{font-family:var(--disp)}
 #ct :focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media(max-width:520px){.ctg{grid-template-columns:1fr}}
 
+/* v14: black ground, soft pink type */
+:root{--pk:#ff9cc8;--pkd:#ff9cc866}
+#main{background:radial-gradient(ellipse at 50% 45%,#141114 0,#0a090a 70%,#050505 100%);color:var(--pk)}
+.logo,.logo small,#nav,body.dark .logo,body.dark .logo small,body.dark #nav{color:var(--pk)}
+#hintS,#count,#lbl{color:var(--pk);opacity:.75}
+#modes button{background:#0000;color:var(--pk);border-color:var(--pkd)}
+#modes button:hover{border-color:var(--pk)}
+#modes button[aria-pressed=true]{background:var(--pk);color:#0a0a0a;border-color:var(--pk)}
+#ctr b{color:var(--pk)}#ctr small{color:var(--pkd)}
+#ctr:not([data-m=flat]){background:var(--pk);color:#0a0a0a}#ctr:not([data-m=flat]) b{color:#0a0a0a}#ctr:not([data-m=flat]) small{color:#0a0a0aaa}
+.rc{box-shadow:0 10px 22px -10px #000c,0 0 0 1px #ffffff10}
+#trans{background:#050505}#tword{color:var(--pk)}
+.pg{background:#050505;color:#f2f2f2}
+.pg .facts,.pg h1{color:var(--pk)}
+.pg h2,#pg-contact .mono{color:#ffffff80}.pg .todo{color:#ffffff66}
+.pg a,.pg ul button{color:#f2f2f2}.pg a:hover,.pg ul button:hover{color:var(--pk)}
+#ctveil.on{background:#0009}
+#ct{background:#151315;border:1px solid var(--pkd)}
+#ct h2{color:var(--pk)}#ct a:hover,#ct a:focus-visible{text-decoration-color:var(--pk)}
+#trans{transition:opacity .16s,visibility .16s}
+#tword{transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .2s}
+
 /* card */
 /* card */
 #cardlayer{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center}
@@ -250,7 +272,7 @@ html,body,button,input{font-family:var(--disp)}
   <div class="pgin">
     <p class="mono">For inquiries</p>
     <div class="mid"><h1 tabindex="-1">Let’s make something that moves.</h1>
-    <div class="mailrow"><span id="mailtxt">hello@your-email.com</span><button id="mailcopy">Copy</button></div></div>
+    <div class="mailrow"><span id="mailtxt">yooyoungjeon.design@gmail.com</span><button id="mailcopy">Copy</button></div></div>
     <div class="cols">
       <div><h2>Elsewhere</h2><ul><li><a href="https://github.com/theblueyoung" target="_blank" rel="noopener">GitHub ↗</a></li><li class="todo">To be added: LinkedIn, résumé</li></ul></div>
       <div><h2>Open to</h2><ul><li>UX / Interaction design roles</li><li>In-house, agency, overseas</li></ul></div>
@@ -285,7 +307,7 @@ html,body,button,input{font-family:var(--disp)}
 <aside id="ct" role="dialog" aria-modal="true" aria-labelledby="cth">
   <h2 id="cth">Come say hi</h2>
   <div class="ctg">
-    <div><h3>Drop me a line</h3><a href="mailto:hello@your-email.com">hello@your-email.com</a></div>
+    <div><h3>Drop me a line</h3><a href="mailto:yooyoungjeon.design@gmail.com">yooyoungjeon.design@gmail.com</a></div>
     <div><h3>Code &amp; prototypes</h3><a href="https://github.com/theblueyoung" target="_blank" rel="noopener">GitHub</a></div>
     <div><h3>Work &amp; career</h3><a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a></div>
     <div><h3>Life lately</h3><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a></div>
@@ -365,7 +387,7 @@ $('#onb').addEventListener('click',()=>{if(scene==='onb'&&!busy){slow=true;tp=1}
 $('#enter').onclick=()=>{slow=true;tp=1};
 addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
 const layers=$$('#onb .l'),par=[.5,.8,1.2,1.7,2.2,2.6];
-function onbFrame(t){const dtO=Math.min(.1,(t-(onbFrame.l||t))/1000);onbFrame.l=t;const k=1-Math.exp(-dtO*2.4);p+=(tp-p)*k;
+function onbFrame(t){const dtO=Math.min(.1,(t-(onbFrame.l||t))/1000);onbFrame.l=t;const k=1-Math.exp(-dtO*6);p+=(tp-p)*k;
   const e=p*p*(3-2*p);$('#world').style.transform=`scale(${1+Math.pow(p,2.3)*7.5})`;
   layers.forEach((l,i)=>{l.style.transform=`translate(calc(-50% + ${-mx*par[i]*10}px),calc(-50% + ${-my*par[i]*6}px))`});
   document.querySelector('#onb .floor').style.opacity=1-e;
@@ -375,7 +397,7 @@ function onbFrame(t){const dtO=Math.min(.1,(t-(onbFrame.l||t))/1000);onbFrame.l=
 }
 function toMain(){const f=$('#flash');f.classList.add('on');
   setTimeout(()=>{$('#onb').style.display='none';$('#onbtxt').style.display='none';scene='main';try{sessionStorage.setItem('yy-seen','1')}catch(_){}const m=$('#main');m.classList.add('on','adjust');$('#again').hidden=false;$('#nav').hidden=false;$('#cap').hidden=false;layout();
-    setTimeout(()=>f.classList.remove('on'),150)},520)}
+    setTimeout(()=>f.classList.remove('on'),150)},280)}
 $('#again').onclick=()=>{if(maxed)return;const f=$('#flash');f.classList.add('on');setTimeout(()=>{$('#main').classList.remove('on','adjust');$('#again').hidden=true;$('#onb').style.display='';$('#onbtxt').style.display='';$('#onbtxt').style.opacity=1;p=tp=0;slow=false;busy=false;scene='onb';setTimeout(()=>f.classList.remove('on'),100)},520)};
 let maxed=false;
 
@@ -487,7 +509,7 @@ function applyPage(n){page=n;document.body.classList.toggle('dark',n!=='work');$
   const pg=n==='work'?null:$('#pg-'+n);if(pg){pg.scrollTop=0;const h=pg.querySelector('h1');h&&h.focus({preventScroll:true})}}
 function navigate(n){if(navBusy||scene!=='main')return;if(ctOpen)setContact(false);if(cardOpen>=0)closeCard();if(idxOpen)setIndex(false);if(n===page)return;
   if(RM){applyPage(n);return}navBusy=true;const tr=$('#trans');$('#tword').textContent=n.toUpperCase();tr.classList.add('on');
-  setTimeout(()=>applyPage(n),420);setTimeout(()=>{tr.classList.remove('on');navBusy=false},950)}
+  setTimeout(()=>applyPage(n),240);setTimeout(()=>{tr.classList.remove('on');navBusy=false},560)}
 $$('#nav button').forEach(b=>b.onclick=()=>{if(b.dataset.p==='contact')setContact(true);else navigate(b.dataset.p)});
 let ctOpen=false,ctFrom=null;
 function setContact(v){if(v===ctOpen)return;ctOpen=v;$('#ctveil').classList.toggle('on',v);$('#ct').classList.toggle('on',v);

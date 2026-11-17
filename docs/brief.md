@@ -174,3 +174,9 @@ UX/UI 디자이너 채용. 형식은 뮤직비디오, 내용은 UX/UI 역량.
 - 회전: Flat 0.15 → 0.12(-20%), Tilt·Gallery 0.105 → 0.042(-60%), Ring 0.17 유지.
 - Contact: 별도 페이지 대신 팝업(검은 카드, 살짝 기울임, Come say hi, 링크 묶음, Close, Esc/바깥 클릭으로 닫기). 링크에 마우스를 올리면 밑줄. 주소는 자리표시자: 이메일 hello@your-email.com, LinkedIn·Instagram은 사이트 첫 화면, GitHub만 실제(theblueyoung).
 - 글꼴: 전부 Pretendard(Light/Regular/Medium/Bold 서브셋, assets/fonts, SIL OFL). 단독 파일과 링크 버전에는 글꼴을 파일 안에 포함(약 2MB).
+
+## 컨셉 F v14 (2026-11-17)
+- Enter 후 메인까지 약 1초(빛으로 들어가는 속도 2.4→6, 플래시 520→280ms, 카드 등장 1.4→0.7초).
+- 테마: 검정 배경 + 연한 핑크(#ff9cc8) 글자. 이름, 메뉴, 보기 버튼, 안내 문구, 전환 화면, About, Contact 팝업 모두 적용.
+- 페이지 전환 950→560ms.
+- Contact 이메일: yooyoungjeon.design@gmail.com
