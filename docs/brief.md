@@ -190,3 +190,4 @@ UX/UI 디자이너 채용. 형식은 뮤직비디오, 내용은 UX/UI 역량.
 ## 컨셉 F v16 (2026-11-17)
 - About: 오른쪽 위 작은 원칙 목록 삭제(큰 문장과 역할이 겹침). 아래 열 제목 영어로(Capabilities / Works / Focus / Education & Experience), Capabilities 목록 영어로("누구나 쓰기 쉬운 디자인" → Accessible Design).
 - "작업 방식" → Focus: Research that fits the real user / Apps for older adults / Design for every ability / Plain words, clear steps. (유영님: UX 리서치로 타깃 유저에 꼭 맞는 설계를 좋아함, 노인과 여러 이유로 사용이 어려운 사람을 돕는 앱에 관심)
+- v16.1: Focus에서 "Apps for older adults" 삭제. 유영님 의도: 특정 연령을 내세우지 않고, 접근성을 기본으로 고려하며 모든 사용자를 포괄하는 디자이너. → Accessibility from the first sketch / Inclusive design for every user.
